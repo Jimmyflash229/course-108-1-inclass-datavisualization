@@ -13,4 +13,5 @@ showtext_auto(enable=TRUE) #啟用字體
 theme_set(theme_classic())
 knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
 
+
 ```
