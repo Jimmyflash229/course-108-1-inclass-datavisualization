@@ -31,11 +31,49 @@ View(StuList)
 View(StuDFfromList)
 StuDFfromList
 
+StuDF <- data.frame(
+  次序=c(1,2,3,4,5,6,7,8),
+  學號=c(172,214,322,425,517,833,752,114),
+  姓名=c("小明","大雄","胖虎","小新","大白","阿華","小英","阿美"),
+  性別=c("男","男","男","女","女","男","女","男"),
+  成績=c(80,42,90,82,50,77,30,90)
+  )
+StuDF
+slice(StuDF,1)
+slice(StuDF,2:4)
+slice(StuDF,)
 ```
 
 ```{r}
+library(readr)
+collegeData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/103_student.csv")
 
+collegeData
+
+
+mutate(collegeData,男生=一年級男生+二年級男生+三年級男生+四年級男生)
+->collegeData
+
+collegeData$女生<-collegeData$一年級女生+collegeData$二年級女生+collegeData$三年級女生+collegeData$四年級女生
+collegeData
+
+mutate(collegeData,男女生比=男生/女生)->collegeData
+
+collegeData
+         
+View(collegeData
+     )
 ```
+
+```{r}
+StuDF
+mutate(StuDF,調分後成績=成績+10)->StuDF   #記得回存
+mutate(StuDF,調分後成績=成績+10)     
+#從data frame 的角度增加欄位(dplyr下)
+StuDF$調分後成績 <-  StuDF$成績+10      
+#$ : 從list的角度多加一個元素叫做調分後成績
+```
+
 
 
 
