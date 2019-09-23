@@ -5,6 +5,8 @@ date: "9/20/2019"
 output: html_document
 ---
 
+## 環境設置
+
 ```{r basic setup, message=FALSE, echo=TRUE, eval=T}
 Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
 
@@ -15,6 +17,12 @@ font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
 showtext_auto(enable=TRUE) #啟用字體
 theme_set(theme_classic())
 knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+```
+
+##mutate、summerise
+
+```{r}
+
 
 
 StuList <- list(
@@ -27,8 +35,6 @@ StuList <- list(
 StuList 
 as.data.frame(StuList) -> StuDFfromList
 StuDFfromList
-View(StuList)
-View(StuDFfromList)
 StuDFfromList
 
 StuDF <- data.frame(
@@ -39,10 +45,45 @@ StuDF <- data.frame(
   成績=c(80,42,90,82,50,77,30,90)
   )
 StuDF
-slice(StuDF,1)
-slice(StuDF,2:4)
-slice(StuDF,)
+
+
+
+summarise(StuDF,
+          平均成績=mean(成績),
+          最高分=max(成績),
+          最低分=min(成績),
+          )
+
+mutate(StuDF,
+      平均成績=mean(成績),
+      最高分=max(成績),
+      最低分=min(成績),
+      
+      調分後成績=成績+(最高分-最低分)/5,
+          )  ->  StuDF
+
+StuDF
+
 ```
+
+```{r}
+
+StuDF <- data.frame(
+  次序=c(1,2,3,4,5,6,7,8),
+  學號=c(172,214,322,425,517,833,752,114),
+  姓名=c("小明","大雄","胖虎","小新","大白","阿華","小英","阿美"),
+  性別=c("男","男","男","女","女","男","女","男"),
+  成績=c(80,42,90,82,50,77,30,90)
+  )
+StuDF
+mutate(StuDF,
+      平均成績=mean(成績),
+      調分後成績=成績+(max(成績)-min(成績))/5,
+          )  ->  StuDF
+StuDF
+```
+
+
 
 ```{r}
 library(readr)
@@ -65,6 +106,9 @@ View(collegeData
      )
 ```
 
+
+
+
 ```{r}
 StuDF
 mutate(StuDF,調分後成績=成績+10)->StuDF   #記得回存
@@ -76,6 +120,93 @@ StuDF$調分後成績 <-  StuDF$成績+10
 
 
 
+```{r}
+StuDF <- data.frame(
+  次序=c(1,2,3,4,5,6,7,8),
+  學號=c(172,214,322,425,517,833,752,114),
+  姓名=c("小明","大雄","胖虎","小新","大白","阿華","小英","阿美"),
+  性別=c("男","男","男","女","女","男","女","男"),
+  成績=c(80,42,90,82,50,77,30,90)
+  )
+StuDF
+mutate(StuDF,
+        平均成績=mean(成績),
+        最高分=max(成績),
+        最低分=min(成績)) -> StuDF2
+
+StuDF2
+```
+
+## logic、select
+
+```{r}
+StuDF2
+mutate(StuDF2,
+      調分後成績=成績+(max(成績)-min(成績))/5,) ->StuDF2
+StuDF2
+
+names(StuDF2) # 顯示物件內元素名稱
+select(StuDF2,
+       姓名,學號,成績,調分後成績)
+select(StuDF2,
+       -次序,-性別,-最高分,-最低分,-平均成績)
+
+
+
+
+
+StuDF
+mutate(StuDF,
+      平均成績=mean(成績),
+      調分後成績=成績+(max(成績)-min(成績))/5,
+          )  ->  StuDF
+StuDF
+
+
+StuDF
+
+
+
+
+# logical vector
+logiChoose <- c(
+  F,F,F,T,T,F,T,F   
+  )
+
+## logic
+
+
+# 使用logical vector選擇所要觀測值"女"
+StuDF[logiChoose,]
+
+
+
+
+StuDF$性別=="女" # logical predicate
+
+logiChoose <- StuDF$性別=="女"   #logichoose是一個判斷的向量
+StuDF
+logiChoose
+
+StuDF[logiChoose,]        #logichoose為TURE是457,所以顯示出457的ROW
+StuDF[logiChoose]         #logichoose為TURE是457,所以顯示出457的COLUMN
+
+
+logiChoose
+which(logiChoose)     # which:那些row本身是TURE
+
+slice(
+  StuDF,which(logiChoose)
+)                        #slice函數本身選取ROW
+
+
+
+StuDF2
+StuDF2[1]   #column
+StuDF2[1,]  #row
+
+
+```
 
 
 
