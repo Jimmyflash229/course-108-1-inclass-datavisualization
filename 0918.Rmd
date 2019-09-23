@@ -19,7 +19,7 @@ theme_set(theme_classic())
 knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
 ```
 
-##mutate、summerise、distinct、unique
+## mutate、summerise、distinct、unique
 
 ```{r}
 
@@ -65,7 +65,7 @@ StuDF
 
 distinct(StuDF,性別)
 
-unique(StuDF$成績)
+unique(StuDF$性別)
 StuDF
 
 collegeData
@@ -324,6 +324,11 @@ summarise(StuDFG,最高分=max(成績),平均成績=mean(成績)) -> StuDFGMax
 StuDFGMax 
 class(StuDFGMax)
 
+group_by(collegeData,縣市名稱,體系別) -> collegeData_by
+summarise(collegeData_by,
+          一年級男生總數=sum(一年級男生),
+          一年級女生總數=sum(一年級女生),
+          學校數目=n())
 ```
 
 
@@ -351,9 +356,6 @@ filter(collegeData,縣市名稱 %in% c("01 新北市","30 臺北市"))
 
 
 # 加總一年級男生、女生總數，學校數目
-View(collegeData)
-str(collegeData)
-mutate(collegeData,人數=n()) -> collegeData
 
 summarise(collegeData,
           一年級男生總數=sum(一年級男生),
@@ -363,9 +365,19 @@ summarise(collegeData,
 
 
 
+計算collegeData中**不同縣市名稱,體系別**的一年級男生及一年級女生總數（使用sum）和學校數目。
+```{r}
+group_by(collegeData,
+         縣市名稱,體系別) -> collegeData_grouped2
+
+summarise(collegeData_grouped2,
+          一年級男生總數=sum(一年級男生),
+          一年級女生總數=sum(一年級女生),
+          學校數目=length(unique(學校名稱)))
 
 
-#全年級男生總數
+
+```
 
 
 
