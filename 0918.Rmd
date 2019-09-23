@@ -386,6 +386,32 @@ summarise(collegeData_grouped2,
 
 
 
+```{r}
+group_by(StuDF,
+         性別) -> StuDF_by性別
+
+mutate(
+  StuDF_by性別,
+  最高分=max(成績),
+  最低分=min(成績),
+  調分大小=(最高分-最低分)/5,
+  調分後成績=成績+調分大小
+) -> StuDF_依性別調分
+
+ungroup(StuDF_依性別調分) -> 
+  StuDF_調分後
+  
+  
+```
+
+
+
+
+
+
+
+
+
 
 
 

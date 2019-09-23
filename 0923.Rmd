@@ -5,6 +5,8 @@ date: "9/20/2019"
 output: html_document
 ---
 
+
+##環境設置
 ```{r basic setup, message=FALSE, echo=TRUE, eval=T}
 Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
 
@@ -19,6 +21,9 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
 
 ```
 
+
+
+## group_by、%>%
 ```{r}
 
 
@@ -29,10 +34,59 @@ StuDF <- data.frame(
   性別=c("男","男","男","女","女","男","女","男"),
   成績=c(80,42,90,82,50,77,30,90)
   )
-StuDF
 
-group_by(StudF,性別)
+#M1
+group_by(StuDF,性別)-> StuDF_性別
+mutate(StuDF_性別,
+       調分後成績=成績+(max(成績)-min(成績))/5
+       )->StuDF_依照性別調分
+
+ungroup(StuDF_依照性別調分)-> StuDF_調分後1
+
+StuDF_調分後1
+
+group_by(StuDF,
+         性別) -> StuDF_by性別
+
+#M2
+StuDF             %>% 
+group_by(性別)    %>% 
+mutate(調分後成績=成績+(max(成績)-min(成績))/5)    %>%
+ungroup()     ->   StuDF_調分後成績2
+
+StuDF_調分後成績2
+
+```
+
+
+##exercise
+```{r}
+#1將collegeData，依等級別,縣市名稱分群後,
+
+#計算一年級男/女生比例後,
+
+#找出男女生比例最高的等級別,縣市名稱組合。
+
+
+
 
 
 
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
