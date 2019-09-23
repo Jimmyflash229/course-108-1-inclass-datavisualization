@@ -19,7 +19,7 @@ theme_set(theme_classic())
 knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
 ```
 
-##mutate、summerise
+##mutate、summerise、distinct、unique
 
 ```{r}
 
@@ -44,7 +44,6 @@ StuDF <- data.frame(
   性別=c("男","男","男","女","女","男","女","男"),
   成績=c(80,42,90,82,50,77,30,90)
   )
-StuDF
 
 
 
@@ -63,6 +62,14 @@ mutate(StuDF,
           )  ->  StuDF
 
 StuDF
+
+distinct(StuDF,性別)
+
+unique(StuDF$成績)
+StuDF
+
+collegeData
+unique(collegeData$等級別)
 
 ```
 
@@ -289,19 +296,83 @@ filter(StuDF,
 
 ```
 
+##group_by、ungroup、sum
+
+```{r}
+StuList <- list(
+  次序=c(1,2,3,4,5,6,7,8),
+  學號=c(172,214,322,425,517,833,752,114),
+  姓名=c("小明","大雄","胖虎","小新","大白","阿華","小英","阿美"),
+  性別=c("男","男","男","女","女","男","女","男"),
+  成績=c(80,42,90,82,50,77,30,90)
+  )
+
+
+StuDF
+group_by(StuDF,性別) -> StuDFG
+StuDFG
+
+summarise(StuDFG,最高分=max(成績),平均成績=mean(成績)) -> StuDFGMax
+ class(StuDFGMax)
+
+ summarise(StuDF,n())
+ summarise(StuDF,sum(成績))
+ 
+ 
+ 
+ ungroup(StuDFGMax)-> StuDFGMax
+StuDFGMax 
+class(StuDFGMax)
+
+```
+
+
+
+
+
+
+
+
 #exercise
 ```{r}
+
+collegeData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/103_student.csv")
+
+collegeData
+
+
+#M1 
+filter(collegeData,縣市名稱=="30 臺北市")
+filter(collegeData,縣市名稱=="30 臺北市"|縣市名稱=="01 新北市")
+#M2
+filter(collegeData,縣市名稱 %in% c("30 臺北市"))
+filter(collegeData,縣市名稱 %in% c("01 新北市","30 臺北市"))
+
+
+
+# 加總一年級男生、女生總數，學校數目
 View(collegeData)
+str(collegeData)
+mutate(collegeData,人數=n()) -> collegeData
 
-filter(collegeData,縣市名稱=="30臺北市")
-filter(collegeData,縣市名稱=="30臺北市"|縣市名稱=="01新北市")
+summarise(collegeData,
+          一年級男生總數=sum(一年級男生),
+          一年級女生總數=sum(一年級女生),
+          學校數目=NROW(unique(學校名稱))
+          )
 
 
-filter(collegeData,縣市名稱 %in% c("30臺北市"))
-filter(collegeData,縣市名稱 %in% c("30臺北市","01新北市:)
+
+
+
+#全年級男生總數
+
+
 
 
 ```
+
+
 
 
 
