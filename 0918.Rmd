@@ -140,6 +140,12 @@ StuDF2
 ## logic、select
 
 ```{r}
+
+StuDF2[1]   #column
+StuDF2[1,]  #row
+
+
+
 StuDF2
 mutate(StuDF2,
       調分後成績=成績+(max(成績)-min(成績))/5,) ->StuDF2
@@ -160,11 +166,6 @@ mutate(StuDF,
       平均成績=mean(成績),
       調分後成績=成績+(max(成績)-min(成績))/5,
           )  ->  StuDF
-StuDF
-
-
-StuDF
-
 
 
 
@@ -173,16 +174,12 @@ logiChoose <- c(
   F,F,F,T,T,F,T,F   
   )
 
-## logic
-
-
-# 使用logical vector選擇所要觀測值"女"
-StuDF[logiChoose,]
+StuDF[logiChoose,]    # 使用logical vector選擇所要觀測值"女"
 
 
 
 
-StuDF$性別=="女" # logical predicate
+StuDF$性別=="女"     #logical predicate
 
 logiChoose <- StuDF$性別=="女"   #logichoose是一個判斷的向量
 StuDF
@@ -193,24 +190,118 @@ StuDF[logiChoose]         #logichoose為TURE是457,所以顯示出457的COLUMN
 
 
 logiChoose
-which(logiChoose)     # which:那些row本身是TURE
+which(logiChoose)     # which:顯示出哪些row是TURE
 
-slice(
-  StuDF,which(logiChoose)
+slice(  StuDF,
+        which(logiChoose)
 )                        #slice函數本身選取ROW
 
 
 
-StuDF2
-StuDF2[1]   #column
-StuDF2[1,]  #row
+moukong <-  collegeData$學校名稱=="國立政治大學"
+slice(collegeData,
+      which(moukong)
+      )
+slice(collegeData,
+      which(collegeData$學校名稱=="國立政治大學")
+)
 
 
+
+
+slice(  StuDF,
+        which(StuDF2$性別=="女")
+)  
+
+
+collegeData
+
+
+
+
+slice(collegeData,
+      which(collegeData$學校名稱=="國立政治大學")
+      )
+
+#方法一
+collegeData[collegeData$學校名稱=="國立政治大學",]
+
+
+#方法二
+slice(collegeData,
+      which(collegeData$學校名稱=="國立政治大學")
+      )
+
+
+
+```
+##relation operator
+
+```{r}
+  #    %in%:屬於
+  #     %% :  取餘數
+  #   | : or
+
+x4 <- c(1,5,8)
+y4 <- c(1,8)
+
+y4 %in% x4
+
+
+twDateTime <- ymd_hms("2019-03-18 14:04:00", tz="Asia/Taipei")
+twDateTime2 <-  ymd_hms("2019-02-01 14:05:00",tz="Asia/Taipei")
+class(twDateTime-twDateTime2)
+class(twDateTime)
 ```
 
 
 
 
+
+```{r}
+aL <- c(1L, 5L, -3L)
+bL <- c(-2L, -4L, 8L)
+class(a+bL)
+class(aL+bL)
+a+bL
+aL+bL
+
+c=2
+d=3
+d%%c
+```
+
+## filter : 篩選
+
+```{r}
+
+
+StuDF
+filter(StuDF,
+       性別=="女")
+filter(StuDF,
+       (性別=="女" & 成績>60))
+filter(StuDF,
+       性別=="女",
+       成績>60) # 多個AND條件可用,分隔
+
+
+
+```
+
+#exercise
+```{r}
+View(collegeData)
+
+filter(collegeData,縣市名稱=="30臺北市")
+filter(collegeData,縣市名稱=="30臺北市"|縣市名稱=="01新北市")
+
+
+filter(collegeData,縣市名稱 %in% c("30臺北市"))
+filter(collegeData,縣市名稱 %in% c("30臺北市","01新北市:)
+
+
+```
 
 
 
