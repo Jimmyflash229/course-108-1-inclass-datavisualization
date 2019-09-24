@@ -19,7 +19,7 @@ theme_set(theme_classic())
 knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
 ```
 
-## mutate、summerise、distinct、unique
+## mutate、summarise、distinct、unique
 
 ```{r}
 
@@ -46,7 +46,6 @@ StuDF <- data.frame(
   )
 
 
-
 summarise(StuDF,
           平均成績=mean(成績),
           最高分=max(成績),
@@ -60,6 +59,13 @@ mutate(StuDF,
       
       調分後成績=成績+(最高分-最低分)/5,
           )  ->  StuDF
+
+
+#測試
+StuDF %>% transmute(測試=成績/學號)  %>%  max()
+StuDF %>% transmute(測試=成績/學號)
+
+
 
 StuDF
 
@@ -144,7 +150,7 @@ mutate(StuDF,
 StuDF2
 ```
 
-## logic、select
+## logic、select、which
 
 ```{r}
 
@@ -192,8 +198,8 @@ logiChoose <- StuDF$性別=="女"   #logichoose是一個判斷的向量
 StuDF
 logiChoose
 
-StuDF[logiChoose,]        #logichoose為TURE是457,所以顯示出457的ROW
-StuDF[logiChoose]         #logichoose為TURE是457,所以顯示出457的COLUMN
+StuDF[logiChoose,]        #logichoose為TRUE是457,所以顯示出457的ROW
+StuDF[logiChoose]         #logichoose為TRUE是457,所以顯示出457的COLUMN
 
 
 logiChoose

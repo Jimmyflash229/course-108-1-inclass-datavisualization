@@ -18,7 +18,6 @@ showtext_auto(enable=TRUE) #啟用字體
 theme_set(theme_classic())
 knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
 
-
 ```
 
 
@@ -26,6 +25,7 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
 ## group_by、%>%
 ```{r}
 
+collegeData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/103_student.csv")
 
 StuDF <- data.frame(
   次序=c(1,2,3,4,5,6,7,8),
@@ -61,6 +61,13 @@ StuDF_調分後成績2
 
 ##exercise
 ```{r}
+
+collegeData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/103_student.csv")
+
+
+
+
+#example
 #1將collegeData，依等級別,縣市名稱分群後,
 
 #計算一年級男/女生比例後,
@@ -68,10 +75,29 @@ StuDF_調分後成績2
 #找出男女生比例最高的等級別,縣市名稱組合。
 
 
+#M1
+collegeData %>% 
+  group_by(等級別,縣市名稱)  %>%
+  summarise(一年級男女比例=sum(一年級男生)/sum(一年級女生)) %>%
+  ungroup()->
+  CD
+
+CD[which.max(CD$一年級男女比例),] %>%View
 
 
 
 
+
+#M2
+collegeData %>%
+  group_by(等級別,縣市名稱) %>%
+  summarise(一年級男女生比例=sum(一年級男生)/sum(一年級女生))  %>%
+  ungroup() ->
+  collegeData_result
+
+which.max(collegeData_result$一年級男女生比例) -> locMax
+collegeData_result[locMax,] %>% View
+collegeData_result[which.max(collegeData_result$一年級男女生比例),]%>%View
 ```
 
 
@@ -81,7 +107,7 @@ StuDF_調分後成績2
 
 
 
-
+  
 
 
 
