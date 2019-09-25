@@ -221,7 +221,8 @@ subsetDataTWbank  %>%
     `定存利率-二年期-固定`,
     `定存利率-三年期-固定`,
     key="定存類型",value="利率"
-  )   %>%  ggplot()+geom_boxplot(aes(x=定存類型,y=利率,color=利率)) 
+  )   ->   subsetDataTWbank_gather
+subsetDataTWbank_gather%>%  ggplot()+geom_boxplot(aes(x=定存類型,y=利率,color=利率)) 
 
 
 
@@ -235,6 +236,19 @@ subsetDataTWbank %>%
   geom_boxplot(
     aes(x=期數,y=利率)
   )
+class(subsetDataTWbank_gather$定存類型)
+
+
+class(subsetDataTWbank_gather$定存類型 %>%   as.factor) %>% levels
+
+subsetDataTWbank_gather %>%
+  mutate(
+    定存類型=factor(定存類型,                    levels=c("定存利率-一個月-固定","定存利率-二年期-固定","定存利率-三年期-固定"))
+  ) -> subsetDataTWbank_gather
+
+
+
+
 
 
 
