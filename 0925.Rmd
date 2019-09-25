@@ -1,0 +1,258 @@
+---
+title: "每週環境"
+author: "劉信傑"
+date: "9/20/2019"
+output: html_document
+---
+
+
+#環境設置
+
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext)
+
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+
+
+```
+
+##gather  壓縮
+
+```{r}
+df_gatherExample <- data.frame(
+  country=c("A","B","C"),
+  `1999`=c("0.7k","37k","212k"),    # `1999`為一個變數  
+  `2000`=c("2k","80k","213k"),     # `2000`為一個變數  
+  check.names = F
+)
+
+df_gatherExample
+
+gather(df_gatherExample,
+       `1999`,`2000`,
+       key="年份",value="人口")  ->AS
+AS
+
+
+collegeData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/103_student.csv")
+
+#ex  將collegeData裡各年級男女生人數合成兩個欄位，類別,人數，其中類別值為原始欄位名稱（即一年級男生，一年級女生，…等等），而人數則為對應人數
+
+gather(collegeData,
+        ,
+       
+       
+       )
+
+#ex  將資料「一～十二月」縮排在月份變數，而其下的對應值縮排在對數變數。
+
+#計算每個月份桃園總結婚對數。
+
+#找出每個地區結婚最高峰月份。
+
+library(readr)
+df_taoyuanMarriage <- read_csv("https://data.tycg.gov.tw/opendata/datalist/datasetMeta/download?id=f95d1a33-ec56-44c5-a9ec-3afba8157e39&rid=fd2070ef-7431-4f9c-bc3a-82d7bfbcd2fb")
+
+df_taoyuanMarriage
+＃Ｍ１
+gather(
+  df_taoyuanMarriage,
+  -月份區域別,
+  key="月份",value="對數"
+)   -> A1                                 #1~12月濃縮成月份、對數
+ 
+
+
+#M2
+df_taoyuanMarriage%>%
+  gather(
+    ends_with("月"),
+    key = "月份",value = "對數"
+  )  %>% View()
+
+
+
+A1  %>%                                   #如果沒有gather就不好從從原本資料做分群
+  group_by(月份) %>%                      #或者用mutate_all、mutate_if、mutate_at  
+  summarise(結婚對數=sum(對數)) %>%       #結合select helper
+  ungroup()  %>% View
+
+df_taoyuanMarriage %>%
+  group_by(月份區域別)
+
+
+```
+
+##spread
+
+```{r}
+df_spreadExample <- data.frame(
+  id = c(1,1,1,2,2,2),
+  var = c("花朶萼片長度", "學名", "總類數"),
+  value = c(5.1, "setosa", 1, 
+            7.0, "versicolor", 2))
+
+
+df_spreadExample
+spread(df_spreadExample,
+       var,value)
+
+#台銀資料
+
+df_twbankExchangeRate <- read_csv("http://www.bot.com.tw/Govinfo/opendata/csv/151/20180101-20181231-FXCRT.csv")
+
+spread(df_twbankExchangeRate,
+       幣別,即期買入匯率)
+
+
+df_twbankExchangeRate %>%
+  select(-即期賣出匯率)  %>%
+  spread(幣別,即期買入匯率)
+  
+
+```
+
+
+##變數類別
+```{r}
+#套件lubridate->ymd(日期)
+
+df_twbankExchangeRate <- read_csv("http://www.bot.com.tw/Govinfo/opendata/csv/151/20180101-20181231-FXCRT.csv")
+
+
+df_twbankExchangeRate  %>%
+mutate(
+  日期=ymd(日期),
+  幣別=as.factor(幣別),
+  即期買入匯率=as.double(即期買入匯率),
+  即期賣出匯率=as.double(即期賣出匯率),
+      )->df_twbankExchangeRate
+
+
+df_twbankExchangeRate
+
+
+```
+
+
+##Data import
+
+```{r}
+library(readr); library(dplyr)
+# 線上引入原始資料成字串向量
+read_lines("http://www.taifex.com.tw/data_gov/taifex_open_data.asp?data_name=DailyForeignExchangeRates") ->
+originalLines
+
+# 將字串由CP950編碼改成UTF8再讀成data frame data2
+originalLines %>%
+  iconv(from="CP950",to="UTF8") %>% 
+  read_csv() -> data2
+
+data2 %>%                          #更正資料類別
+  mutate(
+    日期=ymd(日期)
+  ) ->data2
+
+data2
+
+#引入資料
+
+  library(readr)
+X69786f76_5d6b_4c19_8614_95c3e18ea873 <- read_csv("http://datacenter.taichung.gov.tw/swagger/OpenData/69786f76-5d6b-4c19-8614-95c3e18ea873")
+View(X69786f76_5d6b_4c19_8614_95c3e18ea873)
+
+```
+
+
+##ggplot2
+
+```{r}
+
+#當變數名稱有特殊符號時，用反頓點符號` 將變數名稱圈住，即:
+
+#`<變數名稱>`
+#ggplot(<資料>)+ # 設置畫布 
+#  geom_<幾何圖示類型>( # 畫上幾何圖示 
+#              aes(<座標對應>) #座標對應
+#         )
+
+
+
+
+library(readr)
+subsetDataTWbank <- read_csv("https://www.dropbox.com/s/t8ulj3d7cgl8jh5/subsetDataTWbank.csv?dl=1")
+subsetDataTWbank
+
+library(ggplot2)
+ggplot(subsetDataTWbank)+
+  geom_line(
+    aes(x=西元年月,y=`定存利率-一個月-固定`)
+  )
+
+subsetDataTWbank %>%  ggplot()+geom_line( aes(x=西元年月,y=`定存利率-一個月-固定`))+geom_point( aes(x=西元年月,y=`定存利率-一個月-固定`))
+
+
+#同時寫幾個
+library(ggplot2)
+ggplot(subsetDataTWbank,
+       aes(x=西元年月,y=`定存利率-一個月-固定`))+
+  geom_line()+
+  geom_point()
+
+
+#aes＝aesthetic 美學
+
+#ex
+#請由subsetDataTWbank產生以下圖示：其中
+
+#座標對應：x=定存類型, y=利率
+
+#幾何圖示類型：boxplot
+
+subsetDataTWbank  %>%
+  gather(
+    `定存利率-一個月-固定`,
+    `定存利率-二年期-固定`,
+    `定存利率-三年期-固定`,
+    key="定存類型",value="利率"
+  )   %>%  ggplot()+geom_boxplot(aes(x=定存類型,y=利率,color=利率)) 
+
+
+
+
+subsetDataTWbank %>%
+  gather(
+    `定存利率-一個月-固定`,`定存利率-二年期-固定`,`定存利率-三年期-固定`,
+    key = "期數", value = "利率"
+  ) %>%
+  ggplot() +
+  geom_boxplot(
+    aes(x=期數,y=利率)
+  )
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

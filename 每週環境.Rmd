@@ -18,3 +18,29 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
 
 
 ```
+
+
+
+```{r}
+df_gatherExample <- data.frame(
+  country=c("A","B","C"),
+  `1999`=c("0.7k","37k","212k"),    # `1999`為一個變數  
+  `2000`=c("2k","80k","213k"),     # `2000`為一個變數  
+  check.names = F
+)
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
