@@ -82,8 +82,8 @@ collegeData %>%
   ungroup()->
   CD
 
-CD[which.max(CD$一年級男女比例),] %>%View
-
+CD[which.max(CD$一年級男女比例),] 
+ 
 
 
 
@@ -95,9 +95,26 @@ collegeData %>%
   ungroup() ->
   collegeData_result
 
-which.max(collegeData_result$一年級男女生比例) -> locMax
+which.max(collegeData_result$一年級男女生比例) -> locMax   %>% View()
 collegeData_result[locMax,] %>% View
 collegeData_result[which.max(collegeData_result$一年級男女生比例),]%>%View
+
+
+
+
+#example 3
+c('學號','學屆','學系','學年','學期','學期成績','學分數','必選修類別（必∕選∕通）') -> names(transcriptDataFinal)
+
+load(url("https://www.dropbox.com/s/duh5aaqgl2f5m3z/loopTranscriptData.Rda?raw=1"))
+
+transcriptDataFinal %>%
+  group_by(學號,學期,學年) %>%
+  summarise(學期平均成績=sum(學習成績*學分數)/sum(學分數))  %>%
+
+ 
+
+
+
 ```
 
 
