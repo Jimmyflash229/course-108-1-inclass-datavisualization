@@ -85,9 +85,6 @@ collegeData %>%
 CD[which.max(CD$一年級男女比例),] 
  
 
-
-
-
 #M2
 collegeData %>%
   group_by(等級別,縣市名稱) %>%
@@ -109,9 +106,21 @@ load(url("https://www.dropbox.com/s/duh5aaqgl2f5m3z/loopTranscriptData.Rda?raw=1
 
 transcriptDataFinal %>%
   group_by(學號,學期,學年) %>%
-  summarise(學期平均成績=sum(學習成績*學分數)/sum(學分數))  %>%
-
+  transmute(學期平均成績=sum(學期成績*學分數)/sum(學分數)) ->TDF
+  ungroup(TDF) ->TDF2
  
+TDF
+TDF2
+transcriptDataFinal
+NROW(unique(transcriptDataFinal$學號))    #學生個數
+NROW(unique(transcriptDataFinal$學年))  
+NROW(unique(transcriptDataFinal$學期))  
+
+
+transcriptDataFinal %>%
+  group_by(學號,學期,學年) %>%
+  summarise(學期平均成績=sum(學期成績*學分數)/sum(學分數))  ->AD
+
 
 
 
