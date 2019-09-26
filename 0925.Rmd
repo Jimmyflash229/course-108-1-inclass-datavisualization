@@ -50,14 +50,19 @@ gather(collegeData,
        
        )
 
+
+#讀資料
+library(readr)
+df_taoyuanMarriage <- read_csv("https://data.tycg.gov.tw/opendata/datalist/datasetMeta/download?id=f95d1a33-ec56-44c5-a9ec-3afba8157e39&rid=fd2070ef-7431-4f9c-bc3a-82d7bfbcd2fb")
+
+
+
 #ex  將資料「一～十二月」縮排在月份變數，而其下的對應值縮排在對數變數。
 
 #計算每個月份桃園總結婚對數。
 
 #找出每個地區結婚最高峰月份。
 
-library(readr)
-df_taoyuanMarriage <- read_csv("https://data.tycg.gov.tw/opendata/datalist/datasetMeta/download?id=f95d1a33-ec56-44c5-a9ec-3afba8157e39&rid=fd2070ef-7431-4f9c-bc3a-82d7bfbcd2fb")
 
 df_taoyuanMarriage
 ＃Ｍ１
@@ -223,7 +228,7 @@ subsetDataTWbank  %>%
     key="定存類型",value="利率"
   )   ->   subsetDataTWbank_gather
 subsetDataTWbank_gather%>%  ggplot()+geom_boxplot(aes(x=定存類型,y=利率,color=利率)) 
-
+subsetDataTWbank_gather  %>% View
 
 
 
@@ -236,22 +241,42 @@ subsetDataTWbank %>%
   geom_boxplot(
     aes(x=期數,y=利率)
   )
+# character -> factor
 class(subsetDataTWbank_gather$定存類型)
+class(subsetDataTWbank_gather$定存類型  %>%   as.factor)
 
+#levels of factor
+subsetDataTWbank_gather$定存類型  %>%   as.factor %>% levels   
+ 
+str(as.factor(subsetDataTWbank_gather$定存類型)) 
 
-class(subsetDataTWbank_gather$定存類型 %>%   as.factor) %>% levels
 
 subsetDataTWbank_gather %>%
   mutate(
     定存類型=factor(定存類型,                    levels=c("定存利率-一個月-固定","定存利率-二年期-固定","定存利率-三年期-固定"))
   ) -> subsetDataTWbank_gather
+subsetDataTWbank_gather 
+
+```
+
+##課外NOTE
+```{r}
+
+a <- as.integer(3)
+str(a)
+class(a)
+b <- c(T, T, F)  
+NROW(which(b[]==1))
+
+gender <- c("boy", "girl", "boy", "boy", "girl")  # 建立一個character vector
+gender <- factor(gender)   # 轉換成factor型態
+gender                     # Levels的屬性代表: 在這個變數裡面，存在哪些類別
 
 
-
-
-
-
-
+gender2 <- c("boy", "girl", "boy", "boy", "girl")  # 建立一個character vector
+gender2 <- as.factor(gender2)   # 轉換成factor型態
+gender2                     # Levels的屬性代表: 在這個變數裡面，存在哪些類別
+gender
 ```
 
 
