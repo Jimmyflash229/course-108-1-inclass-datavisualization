@@ -41,14 +41,25 @@ AS
 
 
 collegeData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/103_student.csv")
+collegeData %>%View
 
 #ex  將collegeData裡各年級男女生人數合成兩個欄位，類別,人數，其中類別值為原始欄位名稱（即一年級男生，一年級女生，…等等），而人數則為對應人數
-
+#M1
+names(collegeData)
 gather(collegeData,
-        ,
-       
-       
-       )
+       contains("生") ,
+       key="類別",value = "人數"
+       ) -> g_CD
+
+g_CD  %>% View
+
+#M2
+gather(collegeData,
+      -"學校代碼" ,-"學校名稱",-"日間∕進修別",-"等級別",-"縣市名稱",-"體系別", 
+       key="類別",value = "人數"
+       ) -> g_CD2
+g_CD2[-(3:6)]    ->  g_CD  
+g_CD[-1]   %>% View     #只顯示學校、類別、人數
 
 
 #讀資料
