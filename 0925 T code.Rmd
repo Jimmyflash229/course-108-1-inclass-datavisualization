@@ -98,6 +98,7 @@ df_spreadExample <- data.frame(
   value = c(5.1, "setosa", 1, 
             7.0, "versicolor", 2))
 df_spreadExample
+
 ```
 
 ```{r}
