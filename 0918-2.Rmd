@@ -5,6 +5,7 @@ date: "9/20/2019"
 output: html_document
 ---
 
+
 ##環境設定
 ```{r basic setup, message=FALSE, echo=TRUE, eval=T}
 Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
@@ -16,6 +17,29 @@ font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
 showtext_auto(enable=TRUE) #啟用字體
 theme_set(theme_classic())
 knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+
+
+```
+
+##EXERCISE
+```{r}
+load(url("https://www.dropbox.com/s/duh5aaqgl2f5m3z/loopTranscriptData.Rda?raw=1")) 
+c('學號','學屆','學系','學年','學期','學期成績','學分數','必選修類別（必∕選∕通）') -> names(transcriptDataFinal)
+transcriptDataFinal
+
+#計算每位學生每學期的平均成績。
+transcriptDataFinal %>%
+  group(
+    學年,學期,
+    
+  )
+
+
+
+#計算每位學生每學期學分數在必/選/通 三類的學分數比重。
+
+#學屆為100（即100學年入學）的學生，各系學生在學所修總學分數之中位數，何系最高？
+
 
 
 ```

@@ -391,8 +391,6 @@ summarise(collegeData_grouped2,
 
 
 
-```
-
 
 
 ```{r}
@@ -412,6 +410,7 @@ ungroup(StuDF_依性別調分) ->
   
   
 ```
+
 
 
 

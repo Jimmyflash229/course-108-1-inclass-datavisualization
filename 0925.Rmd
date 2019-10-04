@@ -53,7 +53,7 @@ gather(collegeData,
 
 g_CD  %>% View
 
-#M2
+##M2
 gather(collegeData,
       -"學校代碼" ,-"學校名稱",-"日間∕進修別",-"等級別",-"縣市名稱",-"體系別", 
        key="類別",value = "人數"
@@ -62,21 +62,45 @@ g_CD2[-(3:6)]    ->  g_CD
 g_CD[-1]   %>% View     #只顯示學校、類別、人數
 
 
-#讀資料
+#讀資料 讀進資料後看history  找出code
 library(readr)
 df_taoyuanMarriage <- read_csv("https://data.tycg.gov.tw/opendata/datalist/datasetMeta/download?id=f95d1a33-ec56-44c5-a9ec-3afba8157e39&rid=fd2070ef-7431-4f9c-bc3a-82d7bfbcd2fb")
 
 
 
-#ex  將資料「一～十二月」縮排在月份變數，而其下的對應值縮排在對數變數。
-
-#計算每個月份桃園總結婚對數。
-
-#找出每個地區結婚最高峰月份。
 
 
-df_taoyuanMarriage
-＃Ｍ１
+#ex1  將資料「一～十二月」縮排在月份變數，而其下的對應值縮排在對數變數。
+
+#2計算每個月份桃園總結婚對數。
+
+#3找出每個地區結婚最高峰月份。
+
+#3
+A1 %>%
+  group_by(
+    月份區域別                                      #根據月分區域別裡的分類
+  ) %>%   
+ summarise(                                         #算出特徵值(依group裡面的類別)
+    最高峰月分=月份[which.max(對數)]
+  )    %>%  View                         
+
+
+#2
+df_taoyuanMarriage %>% View  
+A1 %>% View
+A1 %>%
+  group_by(
+    月份
+  ) %>%
+  summarise(
+    "總結婚對數"=sum(對數)
+  ) %>%View
+
+
+
+
+
 gather(
   df_taoyuanMarriage,
   -月份區域別,
@@ -85,18 +109,9 @@ gather(
  
 
 
-#M2
-df_taoyuanMarriage%>%
-  gather(
-    ends_with("月"),
-    key = "月份",value = "對數"
-  )  %>% View()
-
-
-
 A1  %>%                                   #如果沒有gather就不好從從原本資料做分群
   group_by(月份) %>%                      #或者用mutate_all、mutate_if、mutate_at  
-  summarise(結婚對數=sum(對數)) %>%       #結合select helper
+  dplyr::summarise(結婚對數=sum(對數)) %>%       #結合select helper
   ungroup()  %>% View
 
 df_taoyuanMarriage %>%
