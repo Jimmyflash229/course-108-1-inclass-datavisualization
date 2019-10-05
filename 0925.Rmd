@@ -29,10 +29,16 @@ df_gatherExample <- data.frame(
   country=c("A","B","C"),
   `1999`=c("0.7k","37k","212k"),    # `1999`為一個變數  
   `2000`=c("2k","80k","213k"),     # `2000`為一個變數  
-  check.names = F
+check.names = F
 )
 
-df_gatherExample
+
+
+
+
+D
+
+df_gatherExample %>% View()
 
 gather(df_gatherExample,
        `1999`,`2000`,
@@ -96,10 +102,10 @@ A1 %>%
   summarise(
     "總結婚對數"=sum(對數)
   ) %>%View
-
-
-
-
+  
+  
+  
+  
 
 gather(
   df_taoyuanMarriage,
@@ -120,7 +126,8 @@ df_taoyuanMarriage %>%
 
 ```
 
-##spread
+##spread、str__detect
+
 
 ```{r}
 df_spreadExample <- data.frame(
@@ -134,17 +141,31 @@ df_spreadExample
 spread(df_spreadExample,
        var,value)
 
-#台銀資料
+collegeData %>%
+  gather(
+    contains("生"),
+    key="類別",value="人數"
+  ) -> collegeData_gather
+collegeData_gather %>% View
 
+collegeData_gather %>% 
+  spread(
+    類別,人數
+) 
+collegeData %>% View
+
+
+
+#台銀資料
 df_twbankExchangeRate <- read_csv("http://www.bot.com.tw/Govinfo/opendata/csv/151/20180101-20181231-FXCRT.csv")
+df_twbankExchangeRate
+
 
 spread(df_twbankExchangeRate,
-       幣別,即期買入匯率)
-
+       幣別,即期買入匯率)  %>% View
 
 df_twbankExchangeRate %>%
-  select(-即期賣出匯率)  %>%
-  spread(幣別,即期買入匯率)
+  spread(幣別,即期買入匯率) %>% View()
   
 
 ```
@@ -156,7 +177,7 @@ df_twbankExchangeRate %>%
 
 df_twbankExchangeRate <- read_csv("http://www.bot.com.tw/Govinfo/opendata/csv/151/20180101-20181231-FXCRT.csv")
 
-
+df_twbankExchangeRate
 df_twbankExchangeRate  %>%
 mutate(
   日期=ymd(日期),
@@ -306,7 +327,18 @@ gender
 ```
 
 
+##exercise
 
+```{r}
+
+#每筆資料之男生總數、女生總數、學生總數    #hint: str_detect
+collegeData %>%
+  str_detect(
+    
+    )
+#每個學校之男生總數、女生總數、學生總數    #hint: str_detect
+
+```
 
 
 
