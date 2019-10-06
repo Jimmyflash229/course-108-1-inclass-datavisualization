@@ -11,6 +11,7 @@ Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
 
 
 library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext); 
+library(ggpubr);
 
 font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
 showtext_auto(enable=TRUE) #啟用字體
@@ -37,8 +38,9 @@ money123 %>%
   ggplot()+ 
   geom_line(aes(x=`年`,y=`貨幣供給/百萬`,color=`貨幣種類/百萬`))+
   geom_point(aes(x=`年`,y=`貨幣供給/百萬`,color=`貨幣種類/百萬`))+
-  theme_gray()+
-  ggtitle(label = "貨幣流動性高低關係")
+  theme_grey()+
+  ggtitle(label = "貨幣流動性高低關係")+
+  theme_bw(base_size = 12)
 
 
 
