@@ -13,7 +13,12 @@ params:
 Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
 
 
-library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext);library(ggthemes)
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext);library(ggthemes);
+library(grDevices) # 不同顏色模型代碼的呈現及轉換
+library(scales) # show_col()螢幕立即顯示顏色
+library(colorspace) # 調色盤選擇及ggplot應用工具
+library(shinyjs) # 支援套件
+
 
 font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
 showtext_auto(enable=TRUE) #啟用字體
@@ -40,45 +45,86 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
   
 ```{r data cleaning, echo=TRUE, eval=T}
 Sys.setlocale("LC_ALL","Chinese")  #解決中文顯示亂碼問題
-
 library(readr)
-blood <- read_csv("http://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=385AA125-807A-4C5F-89CE-54B021EDE967", 
-    locale = locale(encoding = "BIG5"))
+cityCost <- read_csv("http://www.nccc.com.tw/dataDownload/Gender/BANK_MCT_ALL_GD.CSV")
+View(cityCost)
+unique(cityCost$地區)
+cityCost %>% mutate(
+  地區=factor(地區)
+)->cityCost
+str(cityCost$地區) 
 
-blood %>% mutate(
-  單位=factor(單位)
-)-> blood
-blood %>% gather(
-  `250CC捐血袋數量`,`500CC捐血袋數量`,
-  key="捐血袋種類",value="袋"
-)-> graphData
 
-graphData %>% View()
 
-graphData %>%  
-  ggplot(aes(x=捐血人數,y=袋,color="捐血袋種類")+
-  geom_line()+
+filter(cityCost, 地區=="台北市"|地區=="高雄市")  -> BigCityCost      #篩出高雄市及台北市
+BigCityCost %>%  View()
+str(BigCityCost)
+
+
+BigCityCost %>%                                                      #改年月日
+  mutate(
+    年月=年月 %>%
+      stringr::str_extract_all("[:digit:]+") %>%
+      purrr::map_chr(
+                 function(x) {
+                   x1=as.integer(x[[1]])+1911
+                   x[[1]]=as.character(x1)
+                                stringr::str_c(x,collapse="-")
+                 }
+                 ),
+    年月日=stringr::str_c(年月,"01",sep="-"),
+    西元年月日=lubridate::ymd(年月日)
+  ) ->BigCityCost
+
+BigCityCost[-1] ->BigCityCost
+BigCityCost %>% View()
+BigCityCost  %>%  group_by(
+  地區
+) %>%   mutate(
+    食的消費=(sum(`食品餐飲類男性[金額，新台幣]`) +sum(`食品餐飲類女性[金額，新台幣]`))/402,
+    衣的消費=(sum(`衣著飾品類男性[金額，新台幣]`)+sum(`衣著飾品類女性[金額，新台幣]`))/402    
+) %>% ungroup()->BigCityCost_EnC
+BigCityCost_EnC %>%  View()
+BigCityCost_EnC %>% gather(
+  食的消費,衣的消費,
+  key="食物種類",value = "消費金額"
+) ->  BigCityCost_EnC_gather
+
+
+BigCityCost_EnC_gather %>% ggplot(
+  aes(x=食物種類,y=消費金額,color=地區)
+  )+
+  geom_point(size=2.8)+
   theme_grey()+
-  ggtitle(label =" 替代役役男基礎訓練期間捐血統計表)
+  ggtitle(label = "台北高雄持卡人之平均每月`食衣消費`比較")
 
 
-
-
-```
 
 #### 繪圖程式
 
 ```{r graph, echo=T, eval=T}
 
-moneyG %>% 
-  ggplot()+ 
-  geom_line(aes(x=`年`,y=`貨幣供給/百萬`,color=`貨幣種類/百萬`),size=1,alpha=0.8)+
-  geom_point(aes(x=`年`,y=`貨幣供給/百萬`,color=`貨幣種類/百萬`))+
-  theme_grey()+
-  ggtitle(label = "貨幣流動性高低關係") ->graphData
-graphData
-graphData %>%　ggplotly()
 ```
+```{r}
+df_gatherExample <- data.frame(
+  country=c("A","B","C"),
+  `1999`=c("0.7k","37k","212k"),
+  `2000`=c("2k","80k","213k"),
+  check.names = F
+)
+df_gatherExample
+gather(df_gatherExample,
+       `1999`,`2000`,
+       key="年份",value="人口")
+
+
+test<-read_csv("http://www.nccc.com.tw/dataDownload/Gender/BANK_MCT_ALL_GD.CSV")
+t
+```
+
+
+
+
 
 #### 設計說明
 說明想傳達的訊息（必要）及設計想法（非必要）。寫在***之後

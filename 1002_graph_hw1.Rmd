@@ -44,36 +44,78 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
   * 作圖用資料物件生成
   
 ```{r data cleaning, echo=TRUE, eval=T}
-# 資料引入
-load("example_data.Rda")
+Sys.setlocale("LC_ALL","Chinese")  #解決中文顯示亂碼問題
+library(readr)
+cityCost <- read_csv("http://www.nccc.com.tw/dataDownload/Gender/BANK_MCT_ALL_GD.CSV")
+#View(cityCost)
+#unique(cityCost$地區)
 
-# 資料處理  
-employmentLaborForceData1 <- dataList$"勞動力"$data
-employmentLaborForceData1 %>%
-  tidyr::gather("年平均勞動力","年平均就業人口", key="類別",value="人數（千）") %>%
+cityCost %>% mutate(
+  地區=factor(地區)
+)->cityCost
+
+#str(cityCost$地區)     
+
+
+
+filter(cityCost, 地區=="台北市"|地區=="高雄市")  -> BigCityCost      #篩出高雄市及台北市
+#BigCityCost %>%  View()
+#str(BigCityCost)
+
+
+BigCityCost %>%                                                      #改年月日
   mutate(
-    "年"=as.integer(as.character("年"))
-  ) -> graphData_employment
+    年月=年月 %>%
+      stringr::str_extract_all("[:digit:]+") %>%
+      purrr::map_chr(
+                 function(x) {
+                   x1=as.integer(x[[1]])+1911
+                   x[[1]]=as.character(x1)
+                                stringr::str_c(x,collapse="-")
+                 }
+                 ),
+    年月日=stringr::str_c(年月,"01",sep="-"),
+    西元年月日=lubridate::ymd(年月日)
+  ) ->BigCityCost
+
+BigCityCost[-1] ->BigCityCost
+#BigCityCost %>% View()
+
+BigCityCost  %>%  group_by(
+  地區
+) %>%   mutate(
+    食的消費=(sum(`食品餐飲類男性[金額，新台幣]`) +sum(`食品餐飲類女性[金額，新台幣]`))/(67*2),
+    衣的消費=(sum(`衣著飾品類男性[金額，新台幣]`)+sum(`衣著飾品類女性[金額，新台幣]`))/(67*2)    
+) %>% ungroup()->BigCityCost_EnC
+
+#BigCityCost_EnC %>%  View()
+BigCityCost_EnC %>% gather(
+  食的消費,衣的消費,
+  key="食物種類",value = "消費金額"
+) ->  BigCityCost_EnC_gather
+
+
+
+
 
 # 作圖用資料物件生成：處理好可進行作圖的資料請存在一個名為graphData的list物件裡
 graphData <- list()
-graphData$graphData_employment <- graphData_employment
+graphData<-BigCityCost_EnC_gather
+#graphData %>% View()
 ```
 
 #### 繪圖程式
 
 ```{r graph, echo=T, eval=T}
-graphData$graphData_employment %>%
-  filter("年">=1995) %>%
-  ggplot()+
-  geom_line(
-    aes(
-        x="年",
-        y=`人數（千）`,
-        group="類別",
-        color="類別"),
-    size=1
-  )
+graphData %>% mutate(
+  地區=factor(地區,levels=c("台北市","高雄市"))
+)%>% ggplot(
+  aes(x=食物種類,y=消費金額,color=地區)
+  )+
+  geom_point(size=5)+
+  theme_grey()+
+  ggtitle(label = "台北高雄持卡人之平均每月`食衣消費`比較")
+
 ```
 
 #### 設計說明

@@ -26,13 +26,12 @@ library(readr)
 money123 <- read_csv("C:/Users/Leo jay/Desktop/money123.csv",
 locale = locale(encoding = "BIG5"))
 
-View(money123)
-
 
 money123 %>% 
   gather(M1A,M2,
     key = "貨幣種類",value="貨幣供給/百萬"
-  ) %>% mutate(
+  ) -> monG
+ monG %>%   mutate(
     `年`=as.integer(year),
     `貨幣種類/百萬`=as.factor(貨幣種類)
   ) %>% 
