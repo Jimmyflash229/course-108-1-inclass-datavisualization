@@ -107,14 +107,17 @@ graphData<-BigCityCost_EnC_gather
 #### 繪圖程式
 
 ```{r graph, echo=T, eval=T}
+
 graphData %>% mutate(
-  地區=factor(地區,levels=c("台北市","高雄市"))
+  地區=factor(地區,levels=c("高雄市","台北市"))
 )%>% ggplot(
   aes(x=食物種類,y=消費金額,color=地區)
   )+
   geom_point(size=5)+
   theme_grey()+
   ggtitle(label = "台北高雄持卡人之平均每月`食衣消費`比較")
+
+
 
 ```
 
@@ -123,6 +126,5 @@ graphData %>% mutate(
 *** 
 
 圖為台灣1995年之後的勞動力與就業人口趨勢，95年勞動力人口為9百21萬人，就業人口為9百零4萬5千人，就業比例（即就業率）為百分之98.21； ，到2018年勞動力人口為1千1百87萬4千人，就業人口為1千1百43萬4千人，就業率為百分之96.29。
-
 
 
