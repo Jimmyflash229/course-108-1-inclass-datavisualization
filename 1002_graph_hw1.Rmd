@@ -44,7 +44,7 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
   * 作圖用資料物件生成
   
 ```{r data cleaning, echo=TRUE, eval=T}
-Sys.setlocale("LC_ALL","Chinese")  #解決中文顯示亂碼問題
+Sys.setlocale("LC_ALL","Chinese")               #解決中文顯示亂碼問題
 library(readr)
 cityCost <- read_csv("http://www.nccc.com.tw/dataDownload/Gender/BANK_MCT_ALL_GD.CSV")
 #View(cityCost)
@@ -102,6 +102,7 @@ BigCityCost_EnC %>% gather(
 graphData <- list()
 graphData<-BigCityCost_EnC_gather
 #graphData %>% View()
+
 ```
 
 #### 繪圖程式
@@ -114,8 +115,8 @@ graphData %>% mutate(
   aes(x=食物種類,y=消費金額,color=地區)
   )+
   geom_point(size=5)+
-  theme_grey()+
-  ggtitle(label = "台北高雄持卡人之平均每月`食衣消費`比較")
+  theme_gray()+
+  ggtitle(label = "台北與高雄-持卡人之平均每月`食衣消費`比較")
 
 
 
@@ -125,6 +126,22 @@ graphData %>% mutate(
 說明想傳達的訊息（必要）及設計想法（非必要）。寫在***之後
 *** 
 
-圖為台灣1995年之後的勞動力與就業人口趨勢，95年勞動力人口為9百21萬人，就業人口為9百零4萬5千人，就業比例（即就業率）為百分之98.21； ，到2018年勞動力人口為1千1百87萬4千人，就業人口為1千1百43萬4千人，就業率為百分之96.29。
+*圖形表達:
+本圖清楚地表現了高雄及台北-兩大台灣最繁榮的城市，在生活消費上"食"和"衣"的差異。
+
+*概念核心:
+原始資料為台灣六都中，針對持有信用卡人士，做出的各項消費統計。
+而我認為持有信用卡，代表消費者屬於有一定消費水準的人士，再加上台北及高雄的都市開發相對於其他縣市，算是非常突出，用信用卡消費金額更能凸顯--"兩地中皆有一定消費水準的人們，在兩地的基本消費差異"。
+
+*資料篩選作法:
+在繪圖前，將資料篩出並算出台北及高雄、食物及衣服的平均每月消費金額，從而繪圖。
+
+*補充:
+1.高雄地理位置偏南方，且大眾普遍認為較有熱情，因此選用紅色，台北則為其對比色。
+2.計算部分已於EXCEL再次驗算過。
+3.某些檢查變數結構以即檢查資料等問題，已處理並加上"井字號"，讓程式可以先跑出結果。
+
+
+
 
 
