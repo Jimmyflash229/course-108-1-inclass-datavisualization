@@ -36,11 +36,10 @@ money123 %>%
     `貨幣種類/百萬`=as.factor(貨幣種類)
   ) %>% 
   ggplot()+ 
-  geom_line(aes(x=`年`,y=`貨幣供給/百萬`,color=`貨幣種類/百萬`))+
+  geom_line(aes(x=`年`,y=`貨幣供給/百萬`,color=`貨幣種類/百萬`),size=1,alpha=0.8)+
   geom_point(aes(x=`年`,y=`貨幣供給/百萬`,color=`貨幣種類/百萬`))+
   theme_grey()+
-  ggtitle(label = "貨幣流動性高低關係")+
-  theme_bw(base_size = 12)
+  ggtitle(label = "貨幣流動性高低關係")
 
 
 

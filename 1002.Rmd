@@ -18,6 +18,10 @@ font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
 showtext_auto(enable=TRUE) #啟用字體
 theme_set(theme_classic())
 knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+```
+
+##課程
+```{r}
 
 library(grDevices) # 不同顏色模型代碼的呈現及轉換
 library(scales) # show_col()螢幕立即顯示顏色
@@ -76,7 +80,7 @@ load()
 
 
 
-
+##課程
 
 ```{r}
 data.frame(

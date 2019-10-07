@@ -239,7 +239,6 @@ View(X69786f76_5d6b_4c19_8614_95c3e18ea873)
 
 library(readr)
 subsetDataTWbank <- read_csv("https://www.dropbox.com/s/t8ulj3d7cgl8jh5/subsetDataTWbank.csv?dl=1")
-subsetDataTWbank
 
 library(ggplot2)
 ggplot(subsetDataTWbank)+
@@ -256,9 +255,30 @@ ggplot(subsetDataTWbank,
        aes(x=西元年月,y=`定存利率-一個月-固定`))+
   geom_line()+
   geom_point()
+#
 
 
-#aes＝aesthetic 美學
+subsetDataTWbank %>% gather(
+  contains("固定"),
+  key = "定存類型",value = "利率",
+  )  ->subsetDataTWbank_gather 
+
+subsetDataTWbank_gather$定存類型 %>% 
+as.factor %>% levels
+class(subsetDataTWbank_gather$定存類)
+class(subsetDataTWbank_gather)
+
+mutate(subsetDataTWbank_gather,
+定存類型= factor(定存類型)
+) ->subsetDataTWbank_gather
+str(subsetDataTWbank_gather)
+
+
+subsetDataTWbank_gather$定存類型 %>%    levels
+  
+
+
+0#aes＝aesthetic 美學
 
 #ex
 #請由subsetDataTWbank產生以下圖示：其中
@@ -267,13 +287,6 @@ ggplot(subsetDataTWbank,
 
 #幾何圖示類型：boxplot
 
-subsetDataTWbank  %>%
-  gather(
-    `定存利率-一個月-固定`,
-    `定存利率-二年期-固定`,
-    `定存利率-三年期-固定`,
-    key="定存類型",value="利率"
-  )   ->   subsetDataTWbank_gather
 subsetDataTWbank_gather%>%  ggplot()+geom_boxplot(aes(x=定存類型,y=利率,color=利率)) 
 subsetDataTWbank_gather  %>% View
 
@@ -313,7 +326,7 @@ a <- as.integer(3)
 str(a)
 class(a)
 b <- c(T, T, F)  
-NROW(which(b[]==1))
+(which(b[]==1))
 
 gender <- c("boy", "girl", "boy", "boy", "girl")  # 建立一個character vector
 gender <- factor(gender)   # 轉換成factor型態

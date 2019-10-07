@@ -105,7 +105,7 @@ df_spreadExample
 df_spreadExample
 spread(df_spreadExample,
        var,value)
-```
+```C
 
 ```{r}
 df_twbankExchangeRate <- read_csv("http://www.bot.com.tw/Govinfo/opendata/csv/151/20180101-20181231-FXCRT.csv")
