@@ -25,6 +25,7 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
 library(readr)
 money123 <- read_csv("C:/Users/Leo jay/Desktop/money123.csv",
 locale = locale(encoding = "BIG5"))
+
 View(money123)
 
 

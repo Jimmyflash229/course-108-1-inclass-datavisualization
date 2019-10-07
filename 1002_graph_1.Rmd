@@ -1,5 +1,5 @@
 ---
-title: "每週一圖作業範例"
+title: "每週一圖作業"
 output: html_document
 params:
   組員: ["小明","小花"]  
@@ -12,8 +12,8 @@ params:
 ```{r basic setup, message=FALSE, echo=TRUE, eval=T}
 Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
 
-library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr);
-library(tidyr); library(showtext)
+
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext);library(ggthemes)
 
 font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
 showtext_auto(enable=TRUE) #啟用字體
@@ -39,43 +39,49 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
   * 作圖用資料物件生成
   
 ```{r data cleaning, echo=TRUE, eval=T}
-# 資料引入
-load("example_data.Rda")
+Sys.setlocale("LC_ALL","Chinese")  #解決中文顯示亂碼問題
 
-# 資料處理  
-employmentLaborForceData1 <- dataList$"勞動力"$data
-employmentLaborForceData1 %>%
-  tidyr::gather("年平均勞動力","年平均就業人口", key="類別",value="人數（千）") %>%
-  mutate(
-    "年"=as.integer(as.character("年"))
-  ) -> graphData_employment
+library(readr)
+blood <- read_csv("http://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=385AA125-807A-4C5F-89CE-54B021EDE967", 
+    locale = locale(encoding = "BIG5"))
 
-# 作圖用資料物件生成：處理好可進行作圖的資料請存在一個名為graphData的list物件裡
-graphData <- list()
-graphData$graphData_employment <- graphData_employment
+blood %>% mutate(
+  單位=factor(單位)
+)-> blood
+blood %>% gather(
+  `250CC捐血袋數量`,`500CC捐血袋數量`,
+  key="捐血袋種類",value="袋"
+)-> graphData
+
+graphData %>% View()
+
+graphData %>%  
+  ggplot(aes(x=捐血人數,y=袋,color="捐血袋種類")+
+  geom_line()+
+  theme_grey()+
+  ggtitle(label =" 替代役役男基礎訓練期間捐血統計表)
+
+
+
+
 ```
 
 #### 繪圖程式
 
 ```{r graph, echo=T, eval=T}
-graphData$graphData_employment %>%
-  filter("年">=1995) %>%
-  ggplot()+
-  geom_line(
-    aes(
-        x="年",
-        y=`人數（千）`,
-        group="類別",
-        color="類別"),
-    size=1
-  )
+
+moneyG %>% 
+  ggplot()+ 
+  geom_line(aes(x=`年`,y=`貨幣供給/百萬`,color=`貨幣種類/百萬`),size=1,alpha=0.8)+
+  geom_point(aes(x=`年`,y=`貨幣供給/百萬`,color=`貨幣種類/百萬`))+
+  theme_grey()+
+  ggtitle(label = "貨幣流動性高低關係") ->graphData
+graphData
+graphData %>%　ggplotly()
 ```
 
 #### 設計說明
 說明想傳達的訊息（必要）及設計想法（非必要）。寫在***之後
 *** 
-
-圖為台灣1995年之後的勞動力與就業人口趨勢，95年勞動力人口為9百21萬人，就業人口為9百零4萬5千人，就業比例（即就業率）為百分之98.21； ，到2018年勞動力人口為1千1百87萬4千人，就業人口為1千1百43萬4千人，就業率為百分之96.29。
-
 
 

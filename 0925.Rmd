@@ -12,7 +12,8 @@ output: html_document
 Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
 
 
-library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext)
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext) ; library(purrr);
+
 
 font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
 showtext_auto(enable=TRUE) #啟用字體
@@ -251,6 +252,7 @@ subsetDataTWbank %>%  ggplot()+geom_line( aes(x=西元年月,y=`定存利率-一
 
 #同時寫幾個
 library(ggplot2)
+
 ggplot(subsetDataTWbank,
        aes(x=西元年月,y=`定存利率-一個月-固定`))+
   geom_line()+
@@ -263,21 +265,14 @@ subsetDataTWbank %>% gather(
   key = "定存類型",value = "利率",
   )  ->subsetDataTWbank_gather 
 
-subsetDataTWbank_gather$定存類型 %>% 
-as.factor %>% levels
-class(subsetDataTWbank_gather$定存類)
-class(subsetDataTWbank_gather)
-
+#變更factor的level
 mutate(subsetDataTWbank_gather,
-定存類型= factor(定存類型)
+定存類型= factor(定存類型,levels = c("定存利率-一個月-固定","定存利率-二年期-固定","定存利率三年期-固定"))
 ) ->subsetDataTWbank_gather
-str(subsetDataTWbank_gather)
 
-
+str(subsetDataTWbank_gather$定存類型)
 subsetDataTWbank_gather$定存類型 %>%    levels
   
-
-
 0#aes＝aesthetic 美學
 
 #ex
@@ -288,8 +283,11 @@ subsetDataTWbank_gather$定存類型 %>%    levels
 #幾何圖示類型：boxplot
 
 subsetDataTWbank_gather%>%  ggplot()+geom_boxplot(aes(x=定存類型,y=利率,color=利率)) 
-subsetDataTWbank_gather  %>% View
+subsetDataTWbank_gather %>%  mutate(
+    定存類型=factor(定存類型,levels = c("定存利率-一個月-固定","定存利率-二年期-固定","定存利率-三年期-固定")))  ->subsetDataTWbank_gather
 
+
+subsetDataTWbank_gather$定存類型 %>%  levels()
 
 
 subsetDataTWbank %>%
@@ -318,6 +316,41 @@ subsetDataTWbank_gather %>%
 subsetDataTWbank_gather 
 
 ```
+
+#改日期
+```{r}
+twCalendar <- c("民國88年11月1日","民國88年12月1日","民國89年1月1日")
+twCalendar
+
+twCalendar %>%          # 取出字串中的數字部份
+  stringr::str_extract_all("[:digit:]+") %>% #將每個日期的「年」數字加上1991再合併年月日成為`yyyy-mm-dd`格式
+ purrr::map_chr(
+             function(x) { x1=as.integer(x[[1]])+1911
+               x[[1]]=as.character(x1)
+               stringr::str_c(x,collapse="-") }
+             ) -> westernCalendar
+
+westernCalendar %>%
+  lubridate::ymd() -> datetimeCalendar
+class(datetimeCalendar)
+
+subsetDataTWbank %>%
+  mutate(
+    年月=年月 %>%
+      stringr::str_extract_all("[:digit:]+") %>%
+      purrr::map_chr(
+                 function(x) {
+                   x1=as.integer(x[[1]])+1911
+                   x[[1]]=as.character(x1)
+                                stringr::str_c(x,collapse="-")
+                 }
+                 ),
+    年月日=stringr::str_c(年月,"01",sep="-"),
+    西元年月日=lubridate::ymd(年月日)
+  )
+
+```
+
 
 ##課外NOTE
 ```{r}
