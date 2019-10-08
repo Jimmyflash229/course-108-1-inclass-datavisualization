@@ -52,7 +52,7 @@ cityCost <- read_csv("http://www.nccc.com.tw/dataDownload/Gender/BANK_MCT_ALL_GD
 
 cityCost %>% mutate(
   地區=factor(地區)
-)->cityCost
+)->cityCost 
 
 #str(cityCost$地區)     
 
