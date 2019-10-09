@@ -116,7 +116,8 @@ graphData %>% mutate(
   )+
   geom_point(size=5)+
   theme_gray()+
-  ggtitle(label = "台北與高雄-持卡人之平均每月`食衣消費`比較")
+  ggtitle(label = "台北與高雄-持卡人之平均每月`食衣消費`比較")+
+  coord_flip()
 
 
 
@@ -141,7 +142,6 @@ graphData %>% mutate(
 2.計算部分已於EXCEL再次驗算過。
 3.某些檢查變數結構以即檢查資料等問題，已處理並加上"井字號"，讓程式可以先跑出結果。
 4.消費統計日期自103年1月至108年7月。
-
 
 
 
