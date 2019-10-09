@@ -96,7 +96,7 @@ graphData$travelerFromAsia %>%
   ggplot(aes(x=`年分`,y=`來台旅遊人數(萬)`,color=地區))+
   geom_line()+
   scale_linetype_manual(values = c("10","20","30","40","50","60","70"))+
-  scale_size_manual(values = c(1,2,2,4,5,6,7,8)*1.5)
+  scale_size_manual(values = c(1,6)*0.5)
 
 #  ET作法
 colnames(graphData$travelerFromAsia) <- c("年分", "地區", "來台旅遊人數(萬)")
@@ -199,7 +199,40 @@ basePlot2 +
 
 #geom_text
 ```{r}
+disposableIncome_gather %>%
+  group_by(所得組距) %>%
+  summarise(
+    最後一年=last(年),
+    可支配所得=last(可支配所得)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    所得組=stringr::str_replace(
+      as.character(所得組距),"可支配所得按戶數五等分位組-","")
+    )-> disposableIncome_gather_legend
 
+disposableIncome_gather %>%
+  ggplot(aes(x=年,y=可支配所得))+
+  geom_line(
+    aes(linetype=所得組距)
+  ) +
+  scale_linetype_manual(
+    values=c("15","24","34","51","71"),
+    breaks=c(
+    "可支配所得按戶數五等分位組-次低所得組",
+    "可支配所得按戶數五等分位組-中間所得組",
+    "可支配所得按戶數五等分位組-次高所得組")
+    ) +
+  theme(legend.position = "none") + # 取消legend
+  geom_text(
+    data=disposableIncome_gather_legend,
+    aes(
+      x=最後一年,
+      y=可支配所得,
+      label=所得組
+    ),
+    nudge_x= -3.8, size=3    #將圖附的文字  x軸向左移動3.8的"x軸單位"
+  )
 ```
 
 
