@@ -81,24 +81,32 @@ load("graphData_homework2019-10-08_014.Rda")
 
 load(url("https://github.com/tpemartin/course-108-1-inclass-datavisualization/blob/master/%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/graphData_homework2019-10-08_014.Rda?raw=true"))
 # M1
-#   graphData$travelerFromAsia %>% transmute(
-#  "年分"=graphData$travelerFromAsia[[1]],"來台旅遊人數(萬)"=graphData$travelerFromAsia[[3]],"地區"=gra#   phData$travelerFromAsia[[2]])  -> graphData$travelerFromAsia2
+   graphData$travelerFromAsia %>% transmute(
+  "年分"=graphData$travelerFromAsia[[1]],"來台旅遊人數(萬)"=graphData$travelerFromAsia[[3]],"地區"=graphData$travelerFromAsia[[2]])  -> graphData$travelerFromAsia2
 
+graphData$travelerFromAsia[[1]]
+graphData$travelerFromAsia
 
 # M2    直接改column名稱
 colnames(graphData$travelerFromAsia) <- c("年分","地區","來台旅遊人數(萬)")
 #
 
-graphData$travelerFromAsia[-4,-5,-6]  ->graphData$travelerFromAsia
-graphData$travelerFromAsia
+graphData$travelerFromAsia2$年分 <- as.numeric(graphData$travelerFromAsia2$年分)
 
-graphData$travelerFromAsia %>%
-  ggplot(aes(x=`年分`,y=`來台旅遊人數(萬)`,color=地區))+
-  geom_line()+
-  scale_linetype_manual(values = c("10","20","30","40","50","60","70"))+
-  scale_size_manual(values = c(1,6)*0.5)
+graphData$travelerFromAsia2
+
+graphData$travelerFromAsia2 %>%
+  ggplot(aes(x=`年分`,y=`來台旅遊人數(萬)`,color=地區,linetpye=地區))+
+  geom_line()
+
+graphData$travelerFromAsia2
+
+#問題:1.color沒打  2.為甚麼要弄成numeric而不是其他(其他跑步出來)
+
+
 
 #  ET作法
+graphData$travelerFromAsia
 colnames(graphData$travelerFromAsia) <- c("年分", "地區", "來台旅遊人數(萬)")
 graphData$travelerFromAsia$年分 <- as.numeric(graphData$travelerFromAsia$年分)
 
@@ -150,7 +158,7 @@ basePlot2 +
   scale_y_continuous(limits=c(80,NA))              #X-Y軸呈現範圍縮減
 ```
 
-##breaks: scale變數圖例說明範圍       RE
+## breaks&labels,funtion形式: scale變數圖例說明範圍       RE
 ```{r}
 library(readr)
 disposableIncome <- read_csv("https://www.dropbox.com/s/z80sbjw94cjex8x/disposableIncome.csv?dl=1",locale = locale(encoding = "BIG5"), skip = 4)
@@ -194,6 +202,13 @@ basePlot2 +
   scale_x_date(limits=c(ymd("2003-01-01"),NA),
                breaks = breakDates,
                labels = breakLabels)
+#function
+
+basePlot2 +
+  scale_x_date(limits=c(ymd("2003-01-01"),NA),
+               breaks = breakDates,
+               labels = function(x) year(x))
+
 
 ```
 

@@ -108,16 +108,24 @@ graphData<-BigCityCost_EnC_gather
 #### 繪圖程式
 
 ```{r graph, echo=T, eval=T}
+a=10^9
+
+bN=c(2.2*a/10,a,1.17*a,3*a,3.78*a)
 
 graphData %>% mutate(
   地區=factor(地區,levels=c("高雄市","台北市"))
 )%>% ggplot(
-  aes(x=食物種類,y=消費金額,color=地區)
+  aes(x=食物種類,y=`消費金額`,color=地區)
   )+
   geom_point(size=5)+
   theme_gray()+
   ggtitle(label = "台北與高雄-持卡人之平均每月`食衣消費`比較")+
-  coord_flip()
+  scale_y_continuous(    
+    breaks = bN,
+    labels = c("2.2千萬","1億","1.17億","3億","3.78億")
+)
+
+ # coord_flip()          #x-y軸互換
 
 
 
