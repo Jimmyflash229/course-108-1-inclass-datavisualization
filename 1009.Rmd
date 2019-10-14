@@ -73,7 +73,7 @@ disposableIncome_gather %>%
 p_linetype
 ```
 
-#同學作品
+###同學作品
  
 ```{r}
 
@@ -116,7 +116,7 @@ graphData$travelerFromAsia %>%
 
 ```
 
-
+#123
 ```{r}
 dataCPI <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/PR0101A2Mc.csv", 
     locale = locale(encoding = "BIG5"), skip = 3)
@@ -176,6 +176,8 @@ basePlot2 +
   scale_x_date(limits=c(ymd("2003-01-01"),NA),
                breaks = breakDates)
 
+#breaks、labels
+
 disposableIncome_gather %>%
   ggplot(aes(x=年,y=可支配所得))+
   geom_line(
@@ -192,6 +194,7 @@ disposableIncome_gather %>%
 breakDates <- c("2003-01-01",
                 "2005-01-01","2010-01-01","2015-01-01",
                 "2018-01-01")
+
 breakDates %>% ymd() -> breakDates
 
 breakLabels <- c("2003",
@@ -209,11 +212,39 @@ basePlot2 +
                breaks = breakDates,
                labels = function(x) year(x))
 
+#
+
+
+disposableIncome_gather$所得組距 %<>%            # 用factor排序
+  factor(levels=c(
+    "可支配所得按戶數五等分位組-最低所得組",
+    "可支配所得按戶數五等分位組-次低所得組",
+    "可支配所得按戶數五等分位組-中間所得組",
+    "可支配所得按戶數五等分位組-次高所得組",
+    "可支配所得按戶數五等分位組-最高所得組"
+  )) 
+
+class
+
+disposableIncome_gather %>%
+  ggplot(aes(x=年,y=可支配所得))+
+  geom_line(
+    aes(linetype=所得組距,size=所得組距)
+  ) +
+  scale_linetype_manual(
+    values=c("15","24","34","51","71")
+  ) +
+  scale_size_manual(
+    values=c(0.1,0.3,0.3,0.5,0.7)*1.5
+  ) -> p_linetype
+p_linetype
+
 
 ```
 
 #geom_text
 ```{r}
+disposableIncome_gather
 disposableIncome_gather %>%
   group_by(所得組距) %>%
   summarise(
@@ -246,8 +277,17 @@ disposableIncome_gather %>%
       y=可支配所得,
       label=所得組
     ),
-    nudge_x= -3.8, size=3    #將圖附的文字  x軸向左移動3.8的"x軸單位"
+    nudge_x= -3.8, size=3
   )
+#c(
+#        "次低所得組",
+#        "次高所得組",
+#        "中間所得組",
+#        "最低所得組",
+#        "最高所得組"
+#      )
+
+
 ```
 
 
