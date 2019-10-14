@@ -244,7 +244,17 @@ p_linetype
 
 #geom_text
 ```{r}
-disposableIncome_gather
+disposableIncome_gather$所得組距 %<>%            # 用factor排序
+  factor(levels=c(
+    "可支配所得按戶數五等分位組-最高所得組",
+    "可支配所得按戶數五等分位組-次高所得組",
+    "可支配所得按戶數五等分位組-中間所得組",
+    "可支配所得按戶數五等分位組-次低所得組",
+    "可支配所得按戶數五等分位組-最低所得組"
+  )) 
+
+
+
 disposableIncome_gather %>%
   group_by(所得組距) %>%
   summarise(
@@ -257,42 +267,42 @@ disposableIncome_gather %>%
       as.character(所得組距),"可支配所得按戶數五等分位組-","")
     )-> disposableIncome_gather_legend
 
+
+disposableIncome_gather_legend %>% View
+
+
 disposableIncome_gather %>%
   ggplot(aes(x=年,y=可支配所得))+
   geom_line(
-    aes(linetype=所得組距)
+  aes(linetype=所得組距)
   ) +
   scale_linetype_manual(
-    values=c("15","24","34","51","71"),
-    breaks=c(
-    "可支配所得按戶數五等分位組-次低所得組",
-    "可支配所得按戶數五等分位組-中間所得組",
-    "可支配所得按戶數五等分位組-次高所得組")
+    values=c("15","24","34","51","71")
     ) +
-  theme(legend.position = "none") + # 取消legend
+  theme(legend.position = "none") +     # 取消legend
   geom_text(
     data=disposableIncome_gather_legend,
     aes(
       x=最後一年,
       y=可支配所得,
-      label=所得組
+      label=c(           # 這裡是geom_text裡面的label   不是scale對應breaks的labels
+        "最低",
+        "次低",
+        "中間",
+        "次高",
+        "最高"
+        )
     ),
     nudge_x= -3.8, size=3
   )
-#c(
-#        "次低所得組",
-#        "次高所得組",
-#        "中間所得組",
-#        "最低所得組",
-#        "最高所得組"
-#      )
-
+disposableIncome_gather_legend
 
 ```
+##問題、注意
+```
+問題:1.color沒打  2.為甚麼要弄成numeric而不是其他(其他跑步出來)
 
-
-
-
-
+注意:lables  vs  goem_text  裡面的label
+```
 
 
