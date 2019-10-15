@@ -45,6 +45,12 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
   
 ```{r data cleaning, echo=TRUE, eval=T}
 # 資料引入
+#資料為: 高雄市89年次徵兵及齡男子兵籍調查-教育程度
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+library(readr)
+X89 <- read_csv("https://data.kcg.gov.tw/dataset/093dddd1-af16-4e93-ad7a-1ad2548128d9/resource/9c371b72-4b86-46b7-86b3-8d8052cfe5e3/download/89.csv",locale = locale(encoding = "BIG5"))
+
 
 ```
 
