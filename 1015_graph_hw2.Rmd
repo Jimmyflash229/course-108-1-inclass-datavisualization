@@ -45,13 +45,34 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
   
 ```{r data cleaning, echo=TRUE, eval=T}
 # 資料引入
-#資料為: 高雄市89年次徵兵及齡男子兵籍調查-教育程度
+#資料為: 台北新北及高雄之十五歲以上人口之教育程度
+
 Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
 
-library(readr)
-X89 <- read_csv("https://data.kcg.gov.tw/dataset/093dddd1-af16-4e93-ad7a-1ad2548128d9/resource/9c371b72-4b86-46b7-86b3-8d8052cfe5e3/download/89.csv",locale = locale(encoding = "BIG5"))
 
+data0<-list(                                              #由於資料輸入格式皆錯誤，筆數不多情況下，改為手動輸入
+  區域別=factor(
+  c("臺北市","新北市","高雄市"),levels=c("臺北市","新北市","高雄市")
+  ),                    
+  博士畢業=c(26006,12923,10026),                    
+  碩士畢業=c(234770,178495,122321),              #資料來源:全國人口統計資料地圖
+  大學畢業=c(715281,785388,526897),              #https://gis.ris.gov.tw/dashboard.html?key=B04
+  專科畢業=c(277536,372940,249688),
+  高中畢業=c(589833,1085587,798043),
+  國中畢業=c(255419,668721,397877),
+  國小畢業及以下=c(206070,401741,336689)
+)
 
+data1<-as.data.frame(data0)
+# str(data)
+
+data1 %>% group_by(
+  區域別
+) %>% gather(
+  contains("畢業"),
+  key="教育程度",value="人數"
+) %>% ungroup() -> graphData
+  
 ```
 
 #### 繪圖程式
