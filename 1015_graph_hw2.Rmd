@@ -51,12 +51,12 @@ Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
 
 
 data0<-list(                                              #由於資料輸入格式皆錯誤，筆數不多情況下，改為手動輸入
-  區域別=factor(
+  區域別=factor(                                          
   c("臺北市","新北市","高雄市"),levels=c("臺北市","新北市","高雄市")
   ),                    
-  博士畢業=c(26006,12923,10026),                    
-  碩士畢業=c(234770,178495,122321),              #資料來源:全國人口統計資料地圖
-  大學畢業=c(715281,785388,526897),              #https://gis.ris.gov.tw/dashboard.html?key=B04
+                      
+  碩士畢業=c(234770,178495,122321),              
+  大學畢業=c(715281,785388,526897),              
   專科畢業=c(277536,372940,249688),
   高中畢業=c(589833,1085587,798043),
   國中畢業=c(255419,668721,397877),
@@ -71,13 +71,30 @@ data1 %>% group_by(
 ) %>% gather(
   contains("畢業"),
   key="教育程度",value="人數"
-) %>% ungroup() -> graphData
-  
+) %>% ungroup() -> data1_gather
+
+data1_gather$教育程度   %<>% factor(levels = c("碩士畢業","大學畢業","專科畢業","高中畢業","國中畢業","國小畢業及以下"))  
+
+data1_gather->graphData
 ```
 
 #### 繪圖程式
 
 ```{r graph, echo=T, eval=T}
+colorspace::sequential_hcl(n = 6, h = c(250, -111), c = c(94, NA, 79), l = c(7, 93), power = c(0.7, 1.3), register = "mypalette")
+
+graphData %>% ggplot(
+  aes(x=區域別,y=人數,fill=教育程度)
+)+
+  geom_col(size=6)+
+  ggtitle(label = "教育程度差異")+
+  theme_dark()+
+  coord_flip()+
+  scale_fill_discrete_sequential(palette="mypalette",nmax=6, rev = FALSE)
+
+
+
+
 
 ```
 
