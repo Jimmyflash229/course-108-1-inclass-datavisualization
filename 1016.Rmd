@@ -1,0 +1,338 @@
+---
+title: "每週環境"
+author: "劉信傑"
+date: "9/20/2019"
+output: html_document
+---
+
+##環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext);library(magrittr)
+
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+
+
+```
+
+
+
+## geom_rec
+```{r}
+load(url("https://github.com/tpemartin/course-108-1-inclass-datavisualization/blob/master/%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/homework2/graphData_homework2_005.Rda?raw=true"))
+
+graphData$data %>%
+  ggplot(aes(x=年份,y=毛額,color=國民所得_儲蓄_投資毛額))+
+  geom_line(aes(linetype=國民所得_儲蓄_投資毛額))+
+  scale_linetype_manual(
+    values = c("85","12","31"),
+    breaks = c(
+    "1.4國民所得毛額GNI:1.1+1.2+1.3","3.3國民儲蓄毛額 :2.1+3.2","3.5國內投資毛額"),
+    labels = c("所得毛額","儲蓄毛額","投資毛額")
+    )+
+  theme(legend.position = "none")+
+  scale_size_manual(values = c(1,0.5,0.2))+
+  
+  annotate("text", x = 2016, y = 155000, 
+           label = paste("國民所得毛額"), size = 3)+
+  annotate("text", x = 2016, y = 70000, 
+           label = paste("國民儲蓄毛額"), size = 3) +
+  annotate("text", x = 2016, y = 42000, 
+           label = paste("國民投資毛額"), size = 3) +
+  annotate("text", x = 2010, y = 180000, 
+           label = paste("2009年"), size = 3) +
+  labs(title = "國民所得、儲蓄、投資毛額",
+       caption = "資料來源: 中華民國統計資料網",
+       tag = "單位:億(新台幣)")+
+  
+  geom_vline(aes(xintercept = 2009),linetype="dotted")
+
+
+
+######     分隔線         ########
+ 
+
+graphData$originalDesign+
+  geom_rect(                           # 疊加陰影
+    data=graphData$events,
+    aes(
+      xmin=start,
+      xmax=end,
+      ymin=-Inf,
+      ymax=Inf
+    ),
+    inherit.aes = FALSE, alpha=0.3
+  )+geom_text(
+    data=graphData$events,
+    aes(
+      x=(start+end)/2,
+      y=180000,
+      label=name
+    ),
+    inherit.aes = FALSE,size=1.5
+  )
+
+```
+
+
+## stat function   geom_col   善用list存資料
+
+```{r}
+startSalaryTopCat<- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/startSalaryTopCat.csv")
+
+startSalaryTopCat$大職業別[2:7] %>% str_c(.,collapse="','")
+
+startSalaryTopCat %>% filter(
+  大職業別 %in% c('工業部門','礦業及土石採取業','製造業','電力及燃氣供應業','用水供應及污染整治業','營造業')
+) -> startingSalary_industrial
+
+graphList <- list()
+startingSalary_industrial %>%
+  filter(大職業別 !='工業部門') -> startingSalary_industrial_sub
+startingSalary_industrial_sub %>%  
+  ggplot(aes(x=大職業別))+
+  geom_col(aes(y=`經常性薪資-薪資`))-> graphList$經常薪資_col0
+
+graphList$經常薪資_col0
+```
+
+##reorder 做法1
+
+```{r}
+startingSalary_industrial_sub %>%
+  mutate(
+    大職業別ordered=reorder(大職業別,
+                    `經常性薪資-薪資`,order=T) # order=T才會輸出成ordered factor
+  ) -> startingSalary_industrial_sub
+#1
+startingSalary_industrial_sub %>%
+  ggplot()+
+  geom_col(
+    aes(x=大職業別ordered,y=`經常性薪資-薪資`)
+  ) -> graphList$經常薪資_x有排序ed_col0
+
+graphList$經常薪資_x有排序ed_col0
+
+#2
+startingSalary_industrial_sub %>%
+  ggplot()+
+  geom_col(
+    aes(x=reorder(大職業別,`經常性薪資-薪資`,order = T),y=`經常性薪資-薪資`)
+  ) -> graphList$經常薪資_x有排序ed_col1
+
+graphList$經常薪資_x有排序ed_col1
+```
+
+
+
+
+##reorder 做法2
+```{r}
+breaks_order <- levels(startingSalary_industrial_sub$大職業別ordered)
+startingSalary_industrial_sub %>%
+  ggplot()+
+  geom_col(
+    aes(x=大職業別,y=`經常性薪資-薪資`),width=0.8
+  )+
+  scale_x_discrete(
+    limits=breaks_order                                #即手寫limit=c(.)
+  ) -> graphList$經常薪資_x有排序ed_scaleLimits_col0
+
+graphList$經常薪資_x有排序ed_scaleLimits_col0
+
+#
+startingSalary_industrial_sub %>%  
+  ggplot(aes(x=大職業別ordered,y=`經常性薪資-薪資`))+
+  geom_col(width=0.7)+
+  scale_x_discrete(
+    limits=breaks_order
+  ) -> graphList$經常薪資_x有排序ed_scaleLimits_geomWidth_col0
+
+graphList$經常薪資_x有排序ed_scaleLimits_geomWidth_col0
+
+#
+startingSalary_industrial_sub %>%  
+  ggplot(aes(x=大職業別ordered,y=`經常性薪資-薪資`))->
+  graphList$經常薪資_x有排序ed_ggplotOnly
+
+#
+graphList$經常薪資_x有排序ed_scaleLimits_geomWidth_col0+             
+  theme(aspect.ratio = 1/1.3) ->                             # 改變高寬比例aspect.ratio
+  graphList$經常薪資_x有排序_scalLimits_gmWidth_asp0_col0 
+
+graphList$經常薪資_x有排序_scalLimits_gmWidth_asp0_col0
+```
+
+## theme
+```{r}
+#
+graphList$經常薪資_x有排序ed_ggplotOnly +
+  geom_col(width=0.5) +
+  scale_x_discrete(limits=breaks_order)+
+  theme(aspect.ratio = 1)-> 
+  graphList$經常薪資_x有排序_scalLimits_gmWidth_asp1_col0  
+
+graphList$經常薪資_x有排序_scalLimits_gmWidth_asp1_col0
+
+#
+
+graphList$經常薪資_x有排序_scalLimits_gmWidth_asp1_col0 +
+  theme(
+    axis.text.x=element_text(angle=45)
+    )
+#
+graphList$經常薪資_x有排序_scalLimits_gmWidth_asp1_col0 +
+  theme(
+    axis.text.x=element_text(angle=0, hjust=0.8,vjust =0.1)                    # hjust值  0~1之間
+    ) 
+
+```
+
+## 圖書館資料   fill  dodge
+```{r}
+library(readr)
+#library100_102 <- read_csv("https://www.dropbox.com/s/wuo5o6l55lk68l6/library100_102.csv?dl=1")
+
+library100_102 %>%
+  mutate(
+    借閱日期=date(ymd_hms(借閱時間)),
+    借閱年=year(借閱日期)
+  ) -> library100_102
+
+library100_102 %>%
+  filter(
+    借閱日期 %>% between(ymd("2014-09-01"),ymd("2015-06-30"))
+  ) -> library2014  
+
+library2014 %>%
+  group_by(學號) %>%
+  summarise(
+    學院=last(學院),
+    讀者年級=max(讀者年級)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    讀者年級=as.factor(讀者年級)
+    )-> library2014 
+
+library2014 %>%
+  mutate(
+    學院=reorder(學院,學號,length,order=T)
+  ) -> library2014
+
+library2014 %>% ggplot() -> graphList$圖書_ggplotOnly
+
+graphList$圖書_ggplotOnly+
+  geom_bar(
+    aes(x=學院), fill="#5A99B3", width=0.7
+    )
+#
+graphList$圖書_ggplotOnly +
+  geom_bar(
+    aes(x=學院,fill=as.factor(讀者年級)), width=0.7
+  )
+
+
+
+#######################################
+
+
+
+disposableIncome <- read_csv("https://www.dropbox.com/s/z80sbjw94cjex8x/disposableIncome.csv?dl=1",
+locale = locale(encoding = "BIG5"), skip = 4)
+
+disposableIncome %>%
+slice(c(25:43)) ->disposableIncome
+
+colnames(disposableIncome) <-c("西元年份","平均每戶可支配所得","最低所得組平均","次低所得組平均","中間所得組平均","次高所得組平均","最高所得組平均")
+
+disposableIncome %>%
+mutate(
+最低所得對平均所得 = 最低所得組平均/平均每戶可支配所得,
+次低所得對平均所得 = 次低所得組平均/平均每戶可支配所得,
+中間所得對平均所得 = 中間所得組平均/平均每戶可支配所得,
+次高所得對平均所得 = 次高所得組平均/平均每戶可支配所得,
+最高所得對平均所得 = 最高所得組平均/平均每戶可支配所得,
+) ->disposableIncome
+
+names(disposableIncome)
+```
+
+```{r}
+set.seed(2)
+y <- rnorm(100)
+head(y)
+
+
+
+set.seed(2019)
+x <- rnorm(100)
+head(x)
+
+ggplot2::cut_interval(x,n=8) -> x_interval
+levels(x_interval)
+
+df_x <- data.frame(
+  x=x,
+  x_interval=x_interval
+)
+
+
+data.frame(
+  x=x,
+  xinterval=x_interval
+) -> df_x
+df_x %>% View
+
+
+df_x <- data.frame(
+  x=x,
+  x_interval=x_interval
+)
+
+df_x %>%
+  group_by(x_interval) %>%
+  summarise(
+    interval_count=n()
+  ) %>%
+  ungroup() %>% #View
+  ggplot(aes(x=x_interval))+
+  geom_col(
+    aes(y=interval_count)
+  )
+```
+
+
+## geom_histogram   資料為連續
+```{r}
+#
+
+df_x %>%
+  ggplot(aes(x=x))+
+  geom_histogram()       #原始資料為X筆,且會出現警告
+
+#
+df_x %>%
+  ggplot(aes(x=x))+
+  geom_histogram(bins=8)
+
+##
+
+df_x %>%
+  ggplot(aes(x=x))+
+  geom_density()
+```
+
+## stat function
+```{r}
+
+```
+
+
+
+

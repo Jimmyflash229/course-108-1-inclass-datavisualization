@@ -30,9 +30,32 @@ library(readr)
 disposableIncome <- read_csv("https://www.dropbox.com/s/z80sbjw94cjex8x/disposableIncome.csv?dl=1",locale = locale(encoding = "BIG5"), skip = 4)
 disposableIncome_gather <- read_csv("https://www.dropbox.com/s/cdw1f10jow4frxb/disposableIncome_gather.csv?dl=1")
 
+dataCPI <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/PR0101A2Mc.csv", 
+    locale = locale(encoding = "BIG5"), skip = 3)
+
+## 改變數名稱
+dataCPI %>% 
+  dplyr::rename(
+    年月=X1,
+    CPI=原始值
+  ) -> dataCPI
+
+# 移除「有NA」的row
+dataCPI %>% na.omit() -> dataCPI
+
+## 調整class
+dataCPI$年月 %>% str_c("/01") %>% #擴增為YMD表示
+  ymd() -> dataCPI$年月
+
+# 改成2003M1為基期,其指數為100
+dataCPI %>% filter(年月==ymd("2003-01-01")) %>% 
+  select(CPI) -> CPI2003M1
+dataCPI %>% 
+  mutate(CPI=CPI/CPI2003M1$CPI*100) -> dataCPI2
+
 disposableIncome %>%
   mutate(
-    年=as.integer(X1)
+    年=as.integer(x1)
   ) -> disposableIncome
 
 disposableIncome %>%
@@ -77,7 +100,7 @@ p_linetype
  
 ```{r}
 
-load("graphData_homework2019-10-08_014.Rda")
+#load("graphData_homework2019-10-08_014.Rda")
 
 load(url("https://github.com/tpemartin/course-108-1-inclass-datavisualization/blob/master/%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/graphData_homework2019-10-08_014.Rda?raw=true"))
 # M1
@@ -103,8 +126,7 @@ graphData$travelerFromAsia2
 
 #問題:1.color沒打  2.為甚麼要弄成numeric而不是其他(其他跑步出來)
 
-
-
+  View(ggplot2)
 #  ET作法
 graphData$travelerFromAsia
 colnames(graphData$travelerFromAsia) <- c("年分", "地區", "來台旅遊人數(萬)")
@@ -298,11 +320,28 @@ disposableIncome_gather %>%
 disposableIncome_gather_legend
 
 ```
+
+
+#121313213231321
+```{r}
+load("graphData_homework2019-10-08_014 (1).Rda")
+## ----graph, echo=T, eval=T-----------------------------------------------
+graphData$travelerFromAsi
+
+colnames(graphData$travelerFromAsi)=c("年分","地區","來台旅遊人數(萬)")
+
+graphData$travelerFromAsia %>%
+  ggplot(aes(x="年分",y="來台旅遊人數(萬)",fill="地區")) +
+    geom_bar(stat="identity", position=position_dodge())
+```
+
+
 ##問題、注意
 ```
 問題:1.color沒打  2.為甚麼要弄成numeric而不是其他(其他跑步出來)
 
 注意:lables  vs  goem_text  裡面的label
 ```
+
 
 
