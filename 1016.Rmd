@@ -114,6 +114,7 @@ startingSalary_industrial
 
 graphList <- list()
 
+
 startingSalary_industrial %>%
   filter(大職業別 !='工業部門') -> startingSalary_industrial_sub
 startingSalary_industrial_sub %>%  
@@ -122,11 +123,20 @@ startingSalary_industrial_sub %>%
 
 graphList$經常薪資_col0
 
+startingSalary_industrial_sub %>%
+  mutate(
+    大職業別ordered=reorder(大職業別, `經常性薪資-薪資`,order=T) # order=T才會輸出成ordered factor
+  ) -> startingSalary_industrial_sub
 
-#########  改變資料排序   ##################
+startingSalary_industrial_sub %>%
+  ggplot()+
+  geom_col(
+    aes(x=大職業別ordered,y=`經常性薪資-薪資`,fill=大職業別,)
+  ) +   theme(
+    axis.text.x = element_text(hjust = 0.5)
+)
 
-
-```
+ ```
 
 ##reorder 做法1
 
@@ -153,6 +163,9 @@ startingSalary_industrial_sub %>%
   ) -> graphList$經常薪資_x有排序ed_col1
 
 graphList$經常薪資_x有排序ed_col1
+
+
+
 ```
 
 
@@ -224,7 +237,7 @@ graphList$經常薪資_x有排序_scalLimits_gmWidth_asp1_col0 +
 ```{r}
 library(readr)
 #library100_102 <- read_csv("https://www.dropbox.com/s/wuo5o6l55lk68l6/library100_102.csv?dl=1")
-
+library2014<-read_csv("https://www.dropbox.com/s/999hy0u1y98y6ep/library2014.csv?dl=1")
 library100_102 %>%
   mutate(
     借閱日期=date(ymd_hms(借閱時間)),
@@ -354,12 +367,6 @@ df_x %>%
   ggplot(aes(x=x))+
   geom_density()
 ```
-
-## stat function
-```{r}
-
-```
-
 
 
 
