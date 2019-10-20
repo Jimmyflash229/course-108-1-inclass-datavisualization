@@ -18,6 +18,8 @@ library(scales) # show_col()螢幕立即顯示顏色
 library(colorspace) # 調色盤選擇及ggplot應用工具
 library(shinyjs) # 支援套件
 library(magrittr)
+library(ggforce)
+
 
 font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
 showtext_auto(enable=TRUE) #啟用字體
@@ -64,7 +66,7 @@ data_0 %>% mutate(
       
     grepl("服務業", 行業別)         |grepl("住宿及餐飲", 行業別)                             ~ "服務業",
     grepl("不動產業", 行業別)| grepl("金融及保險業", 行業別)                                ~ "金融保險及不動產"    ,
-    grepl("公共行政及國防；強制性社會安全", 行業別)                                         ~ "公共行政及國防；強制性社會安全",  
+    grepl("公共行政及國防；強制性社會安全", 行業別)                                         ~ "公共行政及軍警",  
     
     TRUE ~ as.character(行業別) )
   )
@@ -105,11 +107,16 @@ dataList$b0 %>% group_by(
 
 
 graphData<-list()
-dataList$b1[-(1:4),]   ->dataList$b   ->  graphData$data  
+dataList$b1[-(1:4),]       ->graphData$data
+->dataList$b
+dataList$b $受傷部位 <- as.factor(dataList$b$受傷部位)
+ 
+dataList$b[(1:4),]    ->dataList$inOrgan
+dataList$b[(5:8),]    ->dataList$body
+dataList$b[(9:12),]   ->dataList$head 
 
 
- 
- 
+
 # 作圖用資料物件生成：處理好可進行作圖的資料請存在一個名為graphData的list物件裡
 ```
 
@@ -117,14 +124,41 @@ dataList$b1[-(1:4),]   ->dataList$b   ->  graphData$data
 #### 繪圖程式
 
 ```{r graph, echo=T, eval=T}
+graphData$data$受傷部位<-as.factor(graphData$data$受傷部位)
+
+
 graphData$data %>% ggplot(
-  aes(x=受傷部位,y=受傷部位次數,fill=工作領域)
+  aes(x= as.numeric(受傷部位),y=受傷部位次數,fill=工作領域)
 )+geom_col(
-  position = "dodge"
+  position = "dodge",width=0.5,
   )+labs(
-  title="各領域職業災害之受傷情況",
-  caption ="資料來源:政府資料開放平台" ,element_text(hjust = 0.1)
-)
+  x = "受傷部位", y = "",
+  title="各領域職業災害之受傷部位統計",
+  caption ="資料來源:政府資料開放平台" 
+  ) + facet_zoom(
+    y = 受傷部位 %in% c("內臟"), horizontal = T, xlim = c(0.67, 1.35),zoom.size=0.4,
+    show.area = T
+    )+ 
+  scale_x_continuous(
+    breaks = 1:length(levels(graphData$data$受傷部位)),
+    label = levels(graphData$data$受傷部位)
+  )+ 
+  theme_bw()+
+  theme(
+    axis.title.x = element_text(vjust=-1),
+    plot.title = element_text(hjust = 0.4,vjust=-0.2),
+    legend.position = c(0.88, 0.80),
+    
+    ) 
+#  annotation_custom(grob = grid::textGrob("單位: 次"),
+#                    xmin = 3, xmax = 3, ymin = 5200, ymax = 5200)
+
+# annotate("text", x = 0.8, y = 500, label = "單位: 次")
+  
+
+
+
+
 ```
 ```{r}
 graphData$data %>% ggplot(
@@ -138,6 +172,10 @@ graphData$data %>% ggplot(
 
 
 
+#    scale  palete  theme(
+#    panel.grid.minor = element_blank(),            #remove the grid of legend
+#    plot.caption = element_text(hjust = +1),       #plot.=element_text(.just=)   移動位子   
+#    plot.title = element_text(hjust =-0.05))
 
 ```
 #### 設計說明
