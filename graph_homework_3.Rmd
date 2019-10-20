@@ -83,6 +83,11 @@ dataList$sub %>% group_by(
 ) ->dataList$a
 
 
+
+
+
+
+
 #dataList$a %>% View()
 dataList$a$受傷部位 <- as.factor(dataList$a$受傷部位)
 
@@ -94,11 +99,31 @@ dataList$a %>% mutate(
     受傷部位=="背"    |受傷部位=="腹"    |受傷部位=="肩"    |受傷部位=="肋骨"  |受傷部位=="前膊"  |受傷部位=="上膊"
     |受傷部位=="手"   |受傷部位=="胸"    |受傷部位=="腕"    |受傷部位=="指"    |受傷部位=="肘"    |受傷部位=="足"  
     |受傷部位=="股"   |受傷部位=="臀"    |受傷部位=="腿"    |受傷部位=="鼠蹊"   ~"身體(頭部以下)",
-    受傷部位=="頭"    |受傷部位=="頸"    |受傷部位=="臉顏"    |受傷部位=="鎖骨"    ~"頭頸",
+    受傷部位=="頭"    |受傷部位=="頸"    |受傷部位=="臉顏"  |受傷部位=="鎖骨"    ~"頭頸",
     受傷部位=="內臟"  ~"內臟",
     TRUE ~ "0000")
   )
 )   ->dataList$b0
+
+#####
+NROW(unique(dataList$sub$工作領域)
+
+dataList$b0 %>% group_by(
+  受傷部位,工作領域
+) %>% summarise(
+  受傷部位次數=sum(受傷部位次數)/NROW(unique(dataList$sub$工作領域))) ->dataList$test
+dataList$test[-(1:4),] -> dataList$test
+dataList$test$受傷部位<- as.factor(dataList$test$受傷部位)
+
+```     
+#####
+
+
+  
+  
+
+
+
 dataList$b0 %>% group_by(
   受傷部位,工作領域
 ) %>% summarise(
@@ -107,13 +132,12 @@ dataList$b0 %>% group_by(
 
 
 graphData<-list()
-dataList$b1[-(1:4),]       ->graphData$data
-->dataList$b
+dataList$b1[-(1:4),]  -> graphData$data
 dataList$b $受傷部位 <- as.factor(dataList$b$受傷部位)
  
-dataList$b[(1:4),]    ->dataList$inOrgan
-dataList$b[(5:8),]    ->dataList$body
-dataList$b[(9:12),]   ->dataList$head 
+# dataList$b[(1:4),]    ->dataList$inOrgan
+# dataList$b[(5:8),]    ->dataList$body
+# dataList$b[(9:12),]   ->dataList$head 
 
 
 
@@ -148,18 +172,17 @@ graphData$data %>% ggplot(
     axis.title.x = element_text(vjust=-1),
     plot.title = element_text(hjust = 0.4,vjust=-0.2),
     legend.position = c(0.88, 0.80),
-    
     ) 
 #  annotation_custom(grob = grid::textGrob("單位: 次"),
 #                    xmin = 3, xmax = 3, ymin = 5200, ymax = 5200)
-
 # annotate("text", x = 0.8, y = 500, label = "單位: 次")
   
-
-
-
-
 ```
+
+
+
+
+
 ```{r}
 graphData$data %>% ggplot(
   aes(x=受傷部位,y=受傷部位次數,fill=工作領域)
