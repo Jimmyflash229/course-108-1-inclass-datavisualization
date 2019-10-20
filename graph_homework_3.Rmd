@@ -54,7 +54,7 @@ levels(data_0$行業別)
 #data_0 %>%  filter( grepl("製造業", 行業別)) 
 
 data_0 %>% mutate(
-  領域 = as.factor(
+  工作領域 = as.factor(
     case_when
     (
     grepl("製造業", 行業別)                         |grepl("批發及零售業", 行業別)          |grepl("產業用機械設備維修及安裝業", 行業別) 
@@ -75,7 +75,7 @@ dataList$sub0[-1] ->dataList$sub
 #dataList$sub1  %>% View()
 
 dataList$sub %>% group_by(
-  受傷部位,領域
+  受傷部位,工作領域
 ) %>% summarise(
   受傷部位次數=sum(受傷部位次數)
 ) ->dataList$a
@@ -87,16 +87,25 @@ dataList$a$受傷部位 <- as.factor(dataList$a$受傷部位)
 levels(dataList$a$受傷部位)
 
 dataList$a %>% mutate(
-  受傷部位XXX=as.factor(
+  受傷部位=as.factor(
     case_when(
     受傷部位=="背"    |受傷部位=="腹"    |受傷部位=="肩"    |受傷部位=="肋骨"  |受傷部位=="前膊"  |受傷部位=="上膊"
     |受傷部位=="手"   |受傷部位=="胸"    |受傷部位=="腕"    |受傷部位=="指"    |受傷部位=="肘"    |受傷部位=="足"  
-    |受傷部位=="股"   |受傷部位=="臀"    |受傷部位=="腿"    |受傷部位=="鼠蹊"   ~"頭部以下",
+    |受傷部位=="股"   |受傷部位=="臀"    |受傷部位=="腿"    |受傷部位=="鼠蹊"   ~"身體(頭部以下)",
     受傷部位=="頭"    |受傷部位=="頸"    |受傷部位=="臉顏"    |受傷部位=="鎖骨"    ~"頭頸",
     受傷部位=="內臟"  ~"內臟",
     TRUE ~ "0000")
   )
-)   ->dataList$b
+)   ->dataList$b0
+dataList$b0 %>% group_by(
+  受傷部位,工作領域
+) %>% summarise(
+  受傷部位次數=sum(受傷部位次數)
+) %>% ungroup    ->dataList$b1
+
+
+graphData<-list()
+dataList$b1[-(1:4),]   ->dataList$b   ->  graphData$data  
 
 
  
@@ -108,9 +117,29 @@ dataList$a %>% mutate(
 #### 繪圖程式
 
 ```{r graph, echo=T, eval=T}
+graphData$data %>% ggplot(
+  aes(x=受傷部位,y=受傷部位次數,fill=工作領域)
+)+geom_col(
+  position = "dodge"
+  )+labs(
+  title="各領域職業災害之受傷情況",
+  caption ="資料來源:政府資料開放平台" ,element_text(hjust = 0.1)
+)
+```
+```{r}
+graphData$data %>% ggplot(
+  aes(x=受傷部位,y=受傷部位次數,fill=工作領域)
+)+geom_col(
+  position = "dodge",width=1
+  )+labs(
+  title="各領域職業災害之受傷情況",
+  caption ="資料來源:政府資料開放平台" ,element_text(hjust = 0.1)
+)+coord_polar(theta = "y")
+
+
+
 
 ```
-
 #### 設計說明
 說明想傳達的訊息（必要）及設計想法（非必要）。寫在***之後
 *** 
