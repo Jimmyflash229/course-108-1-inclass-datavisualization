@@ -148,7 +148,7 @@ graphData$data %>% ggplot(
   caption ="資料來源:政府資料開放平台" 
  # tag="單位: 次"
   ) + facet_zoom(
-    y = 受傷部位 %in% c("內臟"), horizontal = T, xlim = c(0.67, 1.35),zoom.size=0.4,show.area = T,inheri
+    y = 受傷部位 %in% c("內臟"), horizontal = T, xlim = c(0.67, 1.35),zoom.size=0.4,show.area = T
     )+ scale_x_continuous(
     breaks = 1:length(levels(graphData$data$受傷部位)),
     label = levels(graphData$data$受傷部位),
