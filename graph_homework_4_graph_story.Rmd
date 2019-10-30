@@ -1,0 +1,52 @@
+---
+title: "每週一圖作業繪圖說明檔"
+output: html_document
+params:
+  組員: ["小明","小花"]  
+  學號: ["410773818","410773293"]
+---
+
+#### 環境設定
+
+以下為老師執行時一定會存在的環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+rm(list=ls())
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(colorspace); library(grDevices); library(shiny); library(shinyjs); library(scales)
+library(tidyr); library(showtext); library(tidyverse); library(colorspace)
+
+#font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(fig.align='center', fig.showtext=T)
+
+
+```
+
+
+#### 繪圖程式
+
+```{r graph, echo=T, eval=T}
+
+
+graphData$graphdata %>%  ggplot() +
+  geom_col(
+  aes (x=`年分`,y=`來台旅遊人數(萬)`,fill=地區),position="fill")+  scale_y_continuous(
+    name="比例",sec.axis = sec_axis( ~. , name = "比例")
+  ) +theme_grey()+
+  labs(
+    title="來台旅遊人數趨勢"
+  )
+
+
+```
+
+
+#### 設計說明
+說明想傳達的訊息（必要）及設計想法（非必要）。寫在***下一行。
+此圖表現來台旅遊的程度趨勢，反映不同時間及地區的來台漲幅程度。
+
+*** 
+原始資料為台灣2002年至2016年的亞洲地區外國來台旅遊人數趨勢,原作者利用來台人數的漲幅試著描述現象,並且觀測地區有七項,其中有三項的數字其實佔總比例非常小,分別為中東、印度以及亞洲其他地區,其中中東跟印度加起來的佔比甚至不到一個百分點,於是我將這幾個小比例去掉,留下其大宗:韓國、日本及東南亞地區，再以比例表示，較可呈現這三個地區來台旅遊的"程度趨勢"。
+
+從不同顏色色塊中，可清楚看出比例大小隨著時間的推進，而反應不同的比例,相比於圖型y軸為人數之長條圖較為直觀，且從比例角度解釋，較不會失焦於"人數的數字大小"。
+

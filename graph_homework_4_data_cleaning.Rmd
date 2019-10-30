@@ -1,0 +1,119 @@
+---
+title: "每週一圖作業資料檔"
+output: html_document
+params:
+  組員: ["小明","小花"]  
+  學號: ["410773818","410773293"]
+---
+
+#### 環境設定
+
+以下為老師執行時一定會存在的環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+rm(list=ls())
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(colorspace); library(grDevices); library(shiny); library(shinyjs); library(scales)
+library(tidyr); library(showtext); library(tidyverse); library(colorspace)
+library(tmcn)
+
+
+#font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(fig.align='center', fig.showtext=T)
+```
+
+#### 資料處理
+  
+```{r data cleaning, echo=TRUE, eval=T}
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+colorspace::sequential_hcl(n = 3, h = c(14, 58), c = c(68, 130, 40), l = c(25, 99), power = c(1.6, 1.3), register = "MY")
+
+
+
+load(url("https://github.com/tpemartin/course-108-1-inclass-datavisualization/blob/master/%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/homework1/graphData_homework2019-10-08_014.Rda?raw=true"))
+
+colnames(graphData$travelerFromAsia)
+names(graphData$travelerFromAsia) -> name0 # 檢查travelerFromAsia dataframe欄位名稱
+name0 # 螢幕顯示查看，如果為亂碼
+tmcn::toUTF8(name0) -> names(graphData$travelerFromAsia) # 正確轉成utf8 存回原欄位名稱
+#graphData$travelerFromAsia  %>% view
+dataList  <- list()
+
+dataList$data   
+graphData$travelerFromAsia   -> dataList$data   
+
+dataList$data   %>% View()
+
+# unique(dataList$data$地區)
+dataList$data %>%  mutate(
+  地區A=factor(
+    case_when(
+      grepl("印度",地區) |  grepl("中東",地區)    ~ "NA",
+      grepl("亞洲合計",地區)                      ~ "NA",
+      grepl("小計",地區)                          ~"東南亞地區", 
+      地區=="日本 Japan"                          ~"日本",
+      地區=="韓國 Korea,Republic of"              ~"韓國",
+      地區=="亞洲其他地區 Others"                 ~"NA",
+      TRUE~ as.character(地區)
+             ))          )       ->dataList$data2        
+
+#M1
+# filter()
+#M2
+dataList$data2[dataList$data2$地區A != "NA", ]   -> dataList$data2  
+
+dataList$data2  [-2]  ->dataList$data2
+colnames(dataList$data2)=c("年分","來台旅遊人數(萬)","地區")
+dataList$data2$地區  <- factor(dataList$data2$地區,levels=c("韓國","日本","東南亞地區","NA"))
+dataList$data2  ->dataList$data3
+dataList$data3 %>% View()
+
+
+
+
+dataList$data3  %>%   group_by(
+  年分
+) %>% mutate(
+  "來台總數(萬)" =sum(`來台旅遊人數(萬)`),
+  "來台旅遊人數占比"= `來台旅遊人數(萬)`/sum(`來台旅遊人數(萬)`),
+)  ->   dataList$data3
+
+
+
+dataList$data2  -> graphData$graphdata
+
+graphData$graphdata
+
+#   dataList$data2 %>%  ggplot() +
+#  geom_col(
+#  aes(x=`年分`,y=`來台旅遊人數(萬)`,fill=地區),position="fill"
+#  ) +  scale_y_continuous(
+#    name="比例",sec.axis = sec_axis( ~. , name = "比例")
+#  ) 
+
+#+   geom_point(
+#     data=dataList$data3,
+#     aes(x=`年分`,y=`來台旅遊人數占比`),stat="identity"
+# )
+  
+
+########################  GRAPH test    ###################
+  
+#  dataList$data3  %>%  ggplot() +
+#    geom_line(
+#       data=dataList$data3,
+#       aes(x=`年分`,y=`來台旅遊人數占比`),stat="identity"
+#  )
+
+
+#,position="fill"
+# save(<所exchangeData有在graph_story.Rmd要用的物件列出來，中間用逗號分隔>, file="graphData.Rda") # 此行放在最後一行
+```
+
+
+
+
+
+
+
