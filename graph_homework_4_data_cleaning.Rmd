@@ -85,17 +85,15 @@ dataList$data2  -> graphData$graphdata
 
 graphData$graphdata
 
-#   dataList$data2 %>%  ggplot() +
-#  geom_col(
-#  aes(x=`年分`,y=`來台旅遊人數(萬)`,fill=地區),position="fill"
-#  ) +  scale_y_continuous(
-#    name="比例",sec.axis = sec_axis( ~. , name = "比例")
-#  ) 
-
-#+   geom_point(
-#     data=dataList$data3,
-#     aes(x=`年分`,y=`來台旅遊人數占比`),stat="identity"
-# )
+   dataList$data2 %>%  ggplot() +
+   geom_col(
+  aes(x=`年分`,y=`來台旅遊人數(萬)`,fill=地區),position="fill"
+  ) +  scale_y_continuous(
+    name="比例",sec.axis = sec_axis( ~. , name = "比例")
+  ) +geom_point(
+     data=dataList$data3,
+     aes(x=`年分`,y=`來台旅遊人數占比`),stat="identity"
+ )
   
 
 ########################  GRAPH test    ###################

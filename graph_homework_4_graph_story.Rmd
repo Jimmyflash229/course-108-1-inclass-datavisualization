@@ -35,7 +35,10 @@ graphData$graphdata %>%  ggplot() +
   ) +theme_grey()+
   labs(
     title="來台旅遊人數趨勢"
-  )
+  ) +geom_point(
+     data=dataList$data3,
+     aes(x=`年分`,y=`來台旅遊人數占比`),stat="identity"  ,position = "fill"
+ )
 
 
 ```
