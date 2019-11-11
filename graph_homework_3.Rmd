@@ -47,7 +47,7 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
 ```{r data cleaning, echo=TRUE, eval=T}
 # 資料引入
 # 資料處理  
-data_0 <- read_csv("C:/Users/Leo jay/Desktop/123123.csv",locale = locale(encoding = "BIG5"))
+data_0 <- read_csv("C:/Users/Leo jay/Desktop/qaz.csv",locale = locale(encoding = "BIG5"))
 dataList <- list()
 data_0$行業別 <- as.factor(data_0$行業別)
 
