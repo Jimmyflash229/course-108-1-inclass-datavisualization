@@ -1,0 +1,63 @@
+---
+title: "每週一圖作業繪圖說明檔"
+output: html_document
+params:
+  組員: ["小明","小花"]  
+  學號: ["410773818","410773293"]
+---
+
+#### 環境設定
+
+以下為老師執行時一定會存在的環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+rm(list=ls())
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(colorspace); library(grDevices); library(shiny); library(shinyjs); library(scales)
+library(tidyr); library(showtext); library(tidyverse); library(colorspace)
+
+#font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(fig.align='center', fig.showtext=T)
+```
+
+
+#### 繪圖程式
+
+```{r graph, echo=T, eval=T}
+ load("graphData.Rda") # 此行為第一行
+
+colorspace::sequential_hcl(n = 3, h = c(247, 227), c = c(74, 55, 15), l = c(35, 92), power = c(0.6, 1.1), register = "MY")
+
+
+
+
+graphData%>% ggplot()+
+  scale_fill_discrete_sequential(palette="MY",nmax=4,rev=F)+
+  scale_y_continuous(
+    name="時數佔比",sec.axis = sec_axis( ~. , name = "時數佔比")
+  )+ geom_area(aes(x=as.numeric(年級別),y=時數,fill = 時薪級別),alpha=.9,position="fill")+
+  theme_dark()+
+    xlab(label = "年級別")+
+    theme(
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6),
+    legend.box.background = element_rect(color="#1A1B23", size=2)
+    )+
+  labs(
+  title="大學時期打工-不同時薪之佔比"
+  )
+
+```
+
+#### 設計說明
+說明想傳達的訊息（必要）及設計想法（非必要）。寫在***下一行。
+
+*** 
+本次圖型描繪我個人在大學時期的打工時數佔比,其中以時薪高低區分為三類,顯現隨著年級增加,經驗及能力增加,而能夠勝任更高時薪的工作。
+
+在剛成為大一新鮮人時,在當時,民國103年的基本時薪只有115,直到今年民國108年的基本時薪也只有158,所以將基本時薪歸入時薪區段"100至200".之後大二認識了系上的助教,在學習之後能夠幾解決一些電腦設備的問題,故成為助教的助理,當時時薪約為220,同時,在下課時有到補習班擔任解題老師,時薪約為150,分別將此時薪歸入區段"200至300"以及"100至200".大三的時候,由於擔任過助理,能夠處理大部分的問題,對系上的設備及環境也熟悉,故被學姊推薦任職當時教育部計畫的帶班老師,時薪約為350,同時也有擔任教學的職位,時薪約為250,故這個時期有兩個不同等級別的薪資,而且皆是高於基本時薪。到了大四,完全接任計畫的職務,又之前有教學的經驗,所以在外面也接了高中數學家教,這部分的薪資皆落在"300至400";而有時候假日,偶爾會跟朋友假裝去演唱會當工作人員,實為免費聽演唱會,這個部分的時薪為基本時薪,不過比例相較於較高時薪的工作少非常多。
+
+在大學四年,從時薪低到時薪較高的過程中,最大的差別就是時間,到了大三大四幾乎都在讀書及準備考研,在時間越來越少而依然需要額外金錢的情況下,自己只能學習額外的技能,想辦法能用高時薪的工作替代掉低時薪的工作,如圖所示。
+
+其中雙軸皆為比例,是希望幫助讀者閱讀,隨著年級的增加,能夠在視覺上馬上看出在大四,即最成熟的一年的時數佔比表現。

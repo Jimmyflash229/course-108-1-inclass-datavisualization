@@ -1,0 +1,63 @@
+---
+title: "每週一圖作業資料檔"
+output: html_document
+params:
+  組員: ["小明","小花"]  
+  學號: ["410773818","410773293"]
+---
+
+#### 環境設定
+
+以下為老師執行時一定會存在的環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+rm(list=ls())
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(colorspace); library(grDevices); library(shiny); library(shinyjs); library(scales)
+library(tidyr); library(showtext); library(tidyverse); library(colorspace)
+
+#font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(fig.align='center', fig.showtext=T)
+```
+
+#### 資料處理
+  
+```{r data cleaning, echo=TRUE, eval=T}
+Sys.setlocale("LC_ALL","Chinese")   #解決中文亂碼問題
+dataList <- list()
+data_0  <- list(
+  年級別=c("大一","大二","大三","大四"),
+  `時薪100至200`=as.numeric(c("320","256","128","20")),
+  `時薪200至300`=as.numeric(c(0,128,128,0)),
+  `時薪300至400`=as.numeric(c("0","0","320","320"))
+)
+as.data.frame(data_0) ->data_0 
+
+ 
+factor(data_0$年級別,levels=c("大一","大二","大三","大四")) ->data_0$年級別
+#data_0 %>% view
+
+
+
+data_0 %>% gather(
+  contains("時薪"),
+  key = "時薪級別",value = "時數"
+)  ->dataList$data_0
+
+
+factor(dataList$data_0$時薪級別,
+       levels=c(
+         "時薪300至400","時薪200至300","時薪100至200")
+      ) ->  dataList$data_0$時薪級別
+
+
+dataList$data_0 ->graphData
+  
+
+
+
+
+save(graphData,data_0   ,file="graphData.Rda")         # 此行放在最後一行
+
+```
+
