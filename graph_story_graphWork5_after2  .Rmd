@@ -24,7 +24,7 @@ knitr::opts_chunk$set(fig.align='center', fig.showtext=T)
 #### 繪圖程式
 
 ```{r graph, echo=T, eval=T}
- load("graphData.Rda") # 此行為第一行
+  load("graphData.Rda") # 此行為第一行
 
 colorspace::sequential_hcl(n = 3, h = c(247, 227), c = c(74, 55, 15), l = c(35, 92), power = c(0.6, 1.1), register = "MY")
 
@@ -34,7 +34,7 @@ colorspace::sequential_hcl(n = 3, h = c(247, 227), c = c(74, 55, 15), l = c(35, 
 graphData%>% ggplot()+
   scale_fill_discrete_sequential(palette="MY",nmax=4,rev=F)+
   scale_y_continuous(
-    name="時數佔比",sec.axis = sec_axis( ~. , name = "時數佔比")
+    name="時數佔比",sec.axis = sec_axis( ~., name = "時數佔比")
   )+ geom_area(aes(x=as.numeric(年級別),y=時數,fill = 時薪級別),alpha=.9,position="fill")+
   theme_dark()+
     xlab(label = "年級別")+
