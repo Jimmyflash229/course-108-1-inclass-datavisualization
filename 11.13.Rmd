@@ -1,0 +1,96 @@
+---
+title: "每週環境"
+author: "劉信傑"
+date: "9/20/2019"
+output: html_document
+---
+
+##環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext);library(magrittr);library(sf);
+
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+
+
+```
+
+#作業    同學作品
+```{r}
+#找一張履歷   視覺化他的履歷    讓人知道它的優點
+
+
+#1  查看原始碼 
+#   ggthemes:::theme_economist
+
+#2
+#  Y軸轉正 文字與軸線距離等細部調整
+#  theme(axis.title.x = element_blank(),
+#        axis.title.y = element_text(angle = 0,
+#                                    margin = margin(r = -10)),
+#        axis.title.y.right = element_text(angle = 0, vjust = 1,
+#                                          margin = margin(l = -10))
+#        )
+
+```
+
+#sf
+```{r}
+
+outer <-     
+  rbind( # 外圍
+    c(1,5),
+    c(2,1),
+    c(5,1),
+    c(5,5),
+    c(1,5)) # 必需自行輸入起點close it
+
+hole <-
+  rbind( # 洞
+    c(2,4),
+    c(3,2),
+    c(4,3),
+    c(2,4))  # 必需自行輸入起點close it
+
+outer2 <- outer + 12
+hole2 <- hole + 12
+
+
+sfg_county1 <- st_polygon(list(
+  outer,hole
+))
+sfg_county2 <- st_polygon(list(
+  outer2, hole2
+))
+
+sfc_county12column <- st_sfc(sfg_county1,sfg_county2)
+
+sfc_county12column %>% ggplot+geom_sf()
+
+sfc_county12column %>%
+  st_set_crs(4326) -> # EPSG: 4326
+  sfc_county12column
+
+
+
+# st_set_geometry(df,geo_column)
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
