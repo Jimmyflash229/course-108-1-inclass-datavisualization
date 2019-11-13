@@ -41,7 +41,6 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
 
 #sf
 ```{r}
-
 outer <-     
   rbind( # 外圍
     c(1,5),
@@ -70,7 +69,7 @@ sfg_county2 <- st_polygon(list(
 
 sfc_county12column <- st_sfc(sfg_county1,sfg_county2)
 
-sfc_county12column %>% ggplot+geom_sf()
+
 
 sfc_county12column %>%
   st_set_crs(4326) -> # EPSG: 4326
@@ -79,10 +78,51 @@ sfc_county12column %>%
 
 
 # st_set_geometry(df,geo_column)
+df_county12 <- data.frame(
+  name=c("county1","county2"),
+  population=c(100,107)
+)
+
+df_county12 %>%
+  st_set_geometry(sfc_county12column) -> df_county12
+
+df_county12 %>% names
+
+dir.create("county12")
+write_sf(df_county12,"county12/county12.shp")
 
 
+load(url("https://www.dropbox.com/s/uvco1te2kbs6o01/MRT_Taipei.Rda?dl=1"))
+sf_county12=read_sf("county12/county12.shp")
+
+sf_mrt_tpe %>% 
+  filter(
+    str_detect(經過路線,"BL")
+  )  -> sf_mrt_tpe_bl
+
+sf_mrt_tpe_bl  %>% st_coordinates()          #這已經是矩陣
+  
+st_linestring()  -> sfg_mrt_bl
+sfg_mrt_bl %>% ggplot()+geom_sf()
+```
+
+```{r}
+sf_mrt_tpe_bl %>% 
+  mutate(
+    站號=stringr::strextract(
+      經過路線,""
+    )
+  )
+
+#unique(sf_mrt_tpe$MARKNAME1)
+
+<-  read_sf("C://Users/Leo jay//Desktop//mapdata201907311006//COUNTY_MOI_1080726.shp")
 
 
+data(world,package="spData")
+class(world) # 已是sf object
+world %>% st_geometry() %>%
+  ggplot()+geom_sf()
 ```
 
 
