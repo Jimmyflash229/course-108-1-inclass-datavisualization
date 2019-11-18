@@ -126,6 +126,66 @@ world %>% st_geometry() %>%
 ```
 
 
+#  10/30
+```{r}
+ load(url("https://www.dropbox.com/s/9n7b1bcs09gnw0r/ggplot_newTaipei.Rda?dl=1")) # 前個練習若沒做出來，執行此行
+library(readr)
+df_geo_northTW <- read_csv("https://www.dropbox.com/s/6uljw24zkyj7avs/df_geo_northTW.csv?dl=1")
+list_graphs <- list()
+
+
+df_geo_northTW %>%
+  ggplot()+
+  geom_polygon(
+    aes(x=x,y=y,fill=COUNTYNAME), color="azure4"
+  ) -> list_graphs$northTW
+list_graphs$northTW
+
+df_geo_northTW %>%
+  ggplot()+
+  geom_polygon(
+    aes(x=x,y=y,fill=COUNTYNAME), color="azure4"
+  ) -> list_graphs$northTW
+list_graphs$northTW
+
+
+list_graphs$northTW +
+  theme_linedraw()+
+  geom_path(
+    data=data.frame(
+      x=c(121.55,121.7,121.9),
+      y=c(25.1,24.7,24.7)
+      ),
+    aes(x=x,y=y)
+    )+
+  annotate(
+    "text",
+    x=121.9,y=24.71,label="這是臺北市",
+    vjust=0
+  )+
+  theme_void()
+
+```
+
+
+
+```{r}
+
+theme(
+  panel.background = element_rect(fill="red")
+)
+
+
+
+```
+
+
+
+
+
+
+
+
 
 
 
