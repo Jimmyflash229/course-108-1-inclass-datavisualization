@@ -36,13 +36,15 @@ graphData%>% ggplot()+
   scale_y_continuous(
     name="時數佔比",sec.axis = sec_axis( ~., name = "時數佔比")
   )+ geom_area(aes(x=as.numeric(年級別),y=時數,fill = 時薪級別),alpha=.9,position="fill")+
+  
   theme_dark()+
     xlab(label = "年級別")+
     theme(
     legend.justification = c("right", "top"),
     legend.box.just = "right",
     legend.margin = margin(6, 6, 6, 6),
-    legend.box.background = element_rect(color="#1A1B23", size=2)
+    legend.box.background = element_rect(color="#1A1B23", size=2),
+  #  plot.title = element_text(face="bold"),
     )+
   labs(
   title="大學時期打工-不同時薪之佔比"

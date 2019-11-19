@@ -1,0 +1,112 @@
+---
+title: "每週一圖作業資料檔"
+output: html_document
+params:
+  組員: ["小明","小花"]  
+  學號: ["410773818","410773293"]
+---
+
+#### 環境設定
+
+以下為老師執行時一定會存在的環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+rm(list=ls())
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(colorspace); library(grDevices); library(shiny); library(shinyjs); library(scales)
+library(tidyr); library(showtext); library(tidyverse); library(colorspace)
+
+#font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(fig.align='center', fig.showtext=T)
+```
+
+#### 資料處理
+  
+```{r data cleaning, echo=TRUE, eval=T}
+
+
+# save(<所有在graph_story.Rmd要用的物件列出來，中間用逗號分隔>, file="graphData.Rda") # 此行放在最後一行
+```
+
+
+
+
+
+```{r}
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+ b <- list(
+  月份=c(16,14,25,9),
+  名稱=c("鴻海科技集團", "樂金化學", "台灣國際航電", "好想工作室")
+)
+b<- as.data.frame(b)
+
+
+#  ggplot(b, aes(x="", y=月份, fill=名稱)) +                  # 先將資料變成橫的bar  累計其次數   不分群    
+#  geom_bar(stat="identity", width=1)                         
+
+
+b %>% ggplot(aes(x="", y=月份, fill=名稱)) +
+  geom_bar(stat="identity", width=1) +
+  coord_polar("y", start=0)+
+  theme_void()+
+  theme(plot.title = element_text(hjust=0.5))+
+  labs(title = "工作經歷") +
+  geom_text(aes(label = paste(round(月份 / sum(月份) * 100, 1), "%")),
+            position = position_stack(vjust = 0.5))+
+ scale_fill_manual(values=c("鴻海科技集團"="#8A0033","樂金化學"="#FF99AE","台灣國際航電"="#BE4A68" ,"好想工作室"="#004B9F"))
+
+#################################
+#################################
+#################################
+
+
+load("graphData.Rda") # 此行為第一行
+#################################Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+#  https://www.cakeresume.com/resumes/chenmingren-ecaf8f         ###### 此為履歷link   ########
+
+library(png)
+
+library(ggpubr)
+library(jpeg)
+library(ggimage)
+
+
+
+
+
+
+
+
+graphData_paint <- ggplot(data = graphData,aes(x="", y=月份, fill=名稱)) +
+  geom_bar(stat="identity", width=1) +
+  coord_polar("y", start=0)+
+  theme_void()+
+  theme(
+    plot.title = element_text(hjust=0.5,vjust=-5,face="bold"),
+    legend.background = element_rect(fill="dark"),
+    legend.justification = c("right","top") ,
+    legend.margin = margin(5,5,8,8),
+    legend.box.background = element_rect(color="black"),
+    legend.title = element_text(face="bold"),
+    plot.caption = element_text(vjust = 4.9 ,hjust=2.9,face="plain")
+    )+
+  labs(
+    title = "工作經歷",
+    caption = "資料來源:https://www.cakeresume.com/resumes/chenmingren-ecaf8f"
+    ) +
+  geom_text(
+    aes(label = paste(round(月份 / sum(月份) * 100, 1), "%")),
+    position = position_stack(vjust = 0.5)
+            )+
+ scale_fill_manual(values=c("鴻海科技集團"="#8A0033","樂金化學"="#FF99AE","台灣國際航電"="#BE4A68" ,"好想工作室"="#004B9F"))
+
+
+
+  ggbackground(gg = graphData_paint,background ="http://pic.51yuansu.com/pic/cover/00/19/70/57b7f70680489_610.jpg" )
+  
+
+
+```
+
+
