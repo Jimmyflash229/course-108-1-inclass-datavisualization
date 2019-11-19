@@ -28,9 +28,7 @@ load("graphData.Rda") # 此行為第一行
 Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
 #  https://www.cakeresume.com/resumes/chenmingren-ecaf8f         ###### 此為履歷link   ########
 
-library(png)
-library(ggpubr)
-library(jpeg)
+
 library(ggimage)
 
 
@@ -40,7 +38,7 @@ library(ggimage)
 
 
 
-graphData_paint <- ggplot(data = graphData,aes(x="", y=月份, fill=名稱)) +
+graphData_paint <- ggplot(data = graphData,aes(x="", y=月份, fill=公司名稱)) +
   geom_bar(stat="identity", width=1) +
   coord_polar("y", start=0)+
   theme_void()+
@@ -80,12 +78,13 @@ graphData_paint <- ggplot(data = graphData,aes(x="", y=月份, fill=名稱)) +
 說明想傳達的訊息（必要）及設計想法（非必要）。寫在***下一行。
 
 *** 
-本次作品想表達該工作者的，而風格選定"中國風"，
+本圖展現該工作者非常有毅力、大膽，並且具有目標，在同樣的產業類型就業四年半之後，轉往網頁後端，希望能創造更切合消費者需求的產品。
 
 
+本次作品呈現該工作者的職涯發展方向，其中紅色系為工作者畢業後，任職於與產品相關的部門，共三個公司，分別為"鴻海科技集團", "樂金化學", "台灣國際航電",藍色部分的任職身分則為網頁後端，為"好想工作室"。顯示該工作者非常有毅力專注在一個領域，並且大膽選擇轉往網頁後端的資料庫等分析，期許自己能夠透過如此經驗，發展出更滿足消費者的產品，除了專業外也非常具有野心跟動力，而本次作圖風格選定"中國風"，
 
-
-補充:要繳交的時候發現不能用額外套件，但為保存風格整體完整性還是維持原樣。
+補充:要繳交的時候發現不能用額外套件，但為保存風格整體完整性故維持原樣。
+補充:履歷連結:https://www.cakeresume.com/resumes/chenmingren-ecaf8f。
 
 
 
