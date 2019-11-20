@@ -73,6 +73,243 @@ sf_centroid_northTaiwan %>%
 
 coord_centroid_northTaiwan
 
+sf_northTaiwan$x_centroid <- coord_centroid_northTaiwan[,"X"]
+sf_northTaiwan$y_centroid <- coord_centroid_northTaiwan[,"Y"]
+
+
+sf_northTaiwan %>%
+  ggplot()+
+  geom_sf()+
+  geom_point(
+    aes(
+      x=x_centroid,y=y_centroid, 
+      shape=COUNTYNAME, color=COUNTYNAME
+    ), size=2
+  )
+
+sf_northTaiwan %>%
+  ggplot()+geom_sf()
+
+
+sf_northTaiwan %>%
+  st_crop(xmin=119,xmax=122,ymin=24.6,ymax=25.3) %>%
+  ggplot()+geom_sf()    ->world_small
+
+world_small %>% ggplot()+geom_sf()
+
+
+```
+
+#simplify
+```{r}
+sf_taiwan %>%
+  rmapshaper::ms_simplify() -> sf_taiwan_simplify
+
+
+sf_taiwan_simplify %>%
+  st_crop(
+    xmin=119, xmax=123,
+    ymin=21, ymax=26
+  ) %>%
+  ggplot()+geom_sf()
+
+```
+
+```{r}
+world %>%
+  ggplot()+geom_sf()
+
+
+world %>% 
+  filter(
+    subregion=="Northern America"
+  ) %>% 
+  ggplot()+geom_sf()+
+  geom_sf_text(
+    aes(label=name_long)
+  )
+
+```
+
+```{r}
+load(url("https://www.dropbox.com/s/1jwm27dhh4874ch/sf_tpe_mrt.Rda?dl=1"))
+
+sf_taipei %>% st_crs
+
+sf_mrt_tpe_BL %>% st_crs
+
+
+sf_taipei %>% # 第一層是sf_taipei, 以它的CRS為主
+  ggplot()+
+  geom_sf(
+    aes(fill=COUNTYNAME)
+  )+
+  geom_sf(
+    data=sf_mrt_tpe_BL
+  ) -> tpe_mrt_map1 
+tpe_mrt_map1
+
+sf_mrt_tpe_BL %>% # 第一層是sf_mrt_tpe_BL, 以它的CRS為主
+  ggplot()+
+  geom_sf(
+    data = sf_taipei,
+    aes(fill=COUNTYNAME)
+  )+
+  geom_sf() -> tpe_mrt_map2
+tpe_mrt_map2
+
+
+tpe_mrt_map1 + # 以sf_taipei CRS為主
+  coord_sf(
+    xlim=c(121.35,121.8),
+    ylim=c(24.9,25.1)
+    )+
+  labs(title="以sf_taipei CRS為主去限縮") -> tpe_mrt_map1_limit
+
+
+tpe_mrt_map2 + # 以sf_mrt_tpe_BL CRS為主
+  coord_sf(
+    xlim=c(121.35,121.8),
+    ylim=c(24.9,25.1)
+    )+
+  labs(title="以sf_mrt_tpe_BL CRS為主去限縮") -> tpe_mrt_map2_limit
+
+```
+
+#5.7.3
+```{r}
+sf_centroid_northTaiwan %>%
+  st_coordinates() -> coord_centroid_northTaiwan # 取出座標
+
+coord_centroid_northTaiwan
+
+
+sf_northTaiwan %>%
+  st_centroid(of_largest_polygon = T) ->
+  sf_centroid_northTaiwan
+
+sf_centroid_northTaiwan
+
+
+```
+
+
+
+
+#5.9  捷運
+```{r}
+
+
+load(url("https://www.dropbox.com/s/uvco1te2kbs6o01/MRT_Taipei.Rda?dl=1"))
+
+
+
+
+
+sf_mrtStops_tpe %>%
+  st_crs() -> sf_mrtStops_tpe_crs
+sf_mrtStops_tpe_crs
+
+
+
+
+
+
+
+read_sf("C:/Users/Leo jay/Desktop/MARK_捷運車站_1080626.shp")
+
+sf_mrtStops_tpe %>%
+  st_crs() -> sf_mrtStops_tpe_crs
+sf_mrtStops_tpe_crs
+
+
+
+
+###            取出藍線（BL）畫出它的站點。
+
+
+sf_mrtStops_tpe %>%
+  filter(
+    str_detect(經過路線,"BL")
+  ) -> sf_mrtStops_tpe_BL
+
+
+sf_mrtStops_tpe_BL %>%
+  mutate(
+      站號=str_extract(經過路線,"(?<=(BL))[:digit:]+")
+            ) %>%
+  arrange(站號) -> sf_mrtStops_BL
+
+
+```
+
+
+
+#now
+```{r}
+sf_mrtStops_BL %>%
+  mutate(
+      站號=str_extract(經過路線,"(?<=(BL))[:digit:]+")
+            ) %>%
+  arrange(站號) -> sf_mrtStops_BL
+sf_mrtStops_BL
+
+sf_northTaiwan %>%
+  ggplot()+geom_sf()+
+  geom_sf(
+    data=sf_mrtStops_BL
+  )+
+  coord_sf(
+    xlim=c(121.4,121.7),
+    ylim=c(24.9,25.1)
+  ) -> gg_tpe_mrt
+gg_tpe_mrt
+
+
+sf_mrtStops_tpe_BL %>% 
+  st_coordinates()   ->bl_coords
+
+
+gg_tpe_mrt + 
+  geom_path(
+    data=data.frame(
+      x=bl_coords[,"X"],
+      y=bl_coords[,"Y"]
+    ),
+    aes(x=x,y=y)
+  )
+
+```
+
+
+
+```{r}
+sf_northTaiwan %>% 
+  st_crop(
+    
+  )
+
+```
+
+
+
+
+
+```{r}
+
+mrt_BL0 +
+  geom_path(
+    data=sf_mrtStops_tpe_BL %>% 
+            mutate(
+              站號=str_extract(經過路線,"(?<=(BL))[:digit:]+")
+            ) %>%
+            arrange(站號),
+    aes(x=x,y=y)
+  ) -> mrt_BL1
+
+mrt_BL1
+
+
 
 
 
@@ -81,6 +318,4 @@ coord_centroid_northTaiwan
 
 
 ```
-
-
 
