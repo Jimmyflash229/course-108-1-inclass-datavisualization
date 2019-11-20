@@ -1,0 +1,86 @@
+---
+title: "每週環境"
+author: "劉信傑"
+date: "9/20/2019"
+output: html_document
+---
+
+##環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext);library(magrittr)
+
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+
+
+```
+```{r}
+
+library(clipr)
+read_clip()) -> name
+name
+
+library(sf); library(osmdata); library(rmapshaper);library(spData);library(lwgeom)
+
+
+```
+
+
+
+
+
+
+```{r}
+data(world,package="spData")
+world %>% st_crs 
+world %>% st_geometry() %>%
+  ggplot()+geom_sf()
+```
+
+
+```{r}
+world %>% 
+  st_transform(crs="+proj=laea +y_0=0 +lon_0=155 +lat_0=-90 +ellps=WGS84 +no_defs") -> world_proj
+  
+world_proj %>%
+  ggplot()+geom_sf()
+```
+
+
+
+```{r}
+load(url("https://www.dropbox.com/s/elnvocol0nnkcc9/sf_northTaiwan.Rda?dl=1"))
+
+# download.file("http://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=72874C55-884D-4CEA-B7D6-F60B0BE85AB0",
+#              destfile="tw.zip")
+unzip("tw.zip",exdir="taiwan")
+
+read_sf("C:/Users/Leo jay/Desktop/COUNTY_MOI_1080726.shp")-> sf_taiwan
+
+sf_northTaiwan %>%
+  st_centroid(of_largest_polygon = T) ->  sf_centroid_northTaiwan
+
+sf_centroid_northTaiwan
+
+
+sf_centroid_northTaiwan %>%
+  st_coordinates() -> coord_centroid_northTaiwan # 取出座標
+
+coord_centroid_northTaiwan
+
+
+
+
+
+
+
+
+```
+
+
+
