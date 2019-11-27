@@ -148,9 +148,9 @@ df_county12 <- data.frame(
   population=c(100,107)
 )
 
-####　　　添加欄位 新欄位叫做"geometry"
+
 df_county12 %>%
-  st_set_geometry(sfc_county12column) -> df_county12      
+  st_set_geometry(sfc_county12column) -> df_county12       ####　　　添加欄位 新欄位叫做"geometry"       #####
 
 df_county12 %>% names
 class(df_county12)
@@ -220,8 +220,34 @@ sf_mrt_tpe_bl %>%
 
 sfg_mrt_bl2 %>% ggplot+geom_sf()
 
+```
+
+
+#捷運3
+```{r}
+df_mrt  <- data.frame(
+  linename="BL"
+)
+
+ sfg_mrt_bl2 %>% 
+   st_sfc() ->sfc_mrt_bl2
+
+ 
+ df_mrt %>%  
+   st_set_geometry(sfc_mrt_bl2) ->df_mrt
+ 
+ 
+ 
+ 
+
+
+st_crs(sf_mrt_tpe_bl)
+
 
 ```
+
+
+
 
 
 
