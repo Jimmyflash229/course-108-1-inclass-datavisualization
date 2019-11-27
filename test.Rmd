@@ -1,0 +1,227 @@
+---
+title: "每週環境"
+author: "劉信傑"
+date: "9/20/2019"
+output: html_document
+---
+
+##環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext);library(magrittr)
+
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+
+
+```
+```{r}
+point <- st_point(
+  c(2,3)
+)
+
+point %>% ggplot()+geom_sf()
+
+    rbind(c(1,0),c(2,3),c(-1,2) )
+
+mpoint <- st_multipoint(
+    rbind(c(1,0),
+        c(2,3),
+        c(-1,2))
+)
+
+mpoint %>% ggplot()+geom_sf()
+
+
+line <- st_linestring(
+    rbind(c(1,0),
+        c(2,3),
+        c(-1,2))
+)
+line %>% ggplot()+geom_sf()
+
+
+
+outer <-     
+  rbind( # 外圍
+    c(1,5),
+    c(2,1),
+    c(5,1),
+    c(5,5),
+    c(1,5)) # 必需自行輸入起點close it
+
+hole <-
+  rbind( # 洞
+    c(2,4),
+    c(3,2),
+    c(4,3),
+    c(2,4))  # 必需自行輸入起點close it
+  
+poly <- st_polygon(
+  list(
+    outer, 
+    hole
+  )
+) 
+
+poly %>% ggplot()+geom_sf()
+
+
+outer2 <- outer + 12
+hole2 <- hole + 12
+
+mpoly <- st_multipolygon(
+  list(
+    list(
+      outer,
+      hole
+    ),
+    list(
+      outer2,
+      hole2
+    )
+  )
+) 
+
+mpoly %>% ggplot()+geom_sf()
+
+
+st_geometrycollection(
+  list(
+    point, mpoint,
+    line, mline,
+    poly, mpoly
+  )
+) %>% ggplot()+ geom_sf()
+
+sfg_county1 <- st_polygon(list(
+  outer,hole
+))
+sfg_county2 <- st_polygon(list(
+  outer2, hole2
+))
+
+sfc_county12column <- st_sfc(sfg_county1,sfg_county2)
+
+sfc_county12column %>% ggplot+geom_sf()
+
+```
+
+#multiline
+```{r}
+
+mline <- st_multilinestring(
+  list(                   ################   用list寫兩個矩陣
+    rbind(
+      c(1,0),
+      c(2,3),
+      c(-1,3)),
+    rbind(
+      c(-2,3),
+      c(-1,-1))
+    )
+  )
+
+mline %>% ggplot()+geom_sf()
+
+```
+
+# CRS
+
+```{r}
+sfc_county12column %>%
+  st_set_crs(4326) -> # EPSG: 4326
+  sfc_county12column
+
+sfc_county12column
+
+```
+
+# sfc data.frame
+```{r}
+df_county12 <- data.frame(
+  name=c("county1","county2"),
+  population=c(100,107)
+)
+
+####　　　添加欄位 新欄位叫做"geometry"
+df_county12 %>%
+  st_set_geometry(sfc_county12column) -> df_county12      
+
+df_county12 %>% names
+class(df_county12)
+
+df_county12
+
+```
+
+# 畫圖
+```{r}
+df_county12 %>% ggplot+geom_sf(
+  aes(fill=population)
+)+
+  geom_sf_text(
+    aes(label=name)
+  )
+
+```
+
+#  存成shp
+```{r}
+dir.create("新增資料夾")                        #######創造資料夾
+write_sf(df_county12,"新增資料夾/county12.shp") #######存成shp檔案   會有很多個檔 
+
+#save(df_county12,file="df_county12.Rda")        #########亦可存成rda
+```
+
+#   捷運0
+```{r}
+load(url("https://www.dropbox.com/s/uvco1te2kbs6o01/MRT_Taipei.Rda?dl=1"))
+
+sf_mrtStops_tpe %>% filter(
+  str_detect(經過路線,"BL")                  ###### detect:  找出有包含""字的項目
+) ->sf_mrt_tpe_bl
+```
+
+#  捷運1
+```{r}
+sf_mrt_tpe_bl %>% st_coordinates()         #####  找出資料的座標  且默認為矩陣
+
+sf_mrt_tpe_bl %>% 
+  st_coordinates() %>% 
+  st_linestring()        ->  sfg_mrt_bl
+
+sfg_mrt_bl %>% ggplot+geom_sf()              ######  線為path 有照順序  所以要先改順序
+
+
+#####################
+class(sf_mrt_tpe_bl)
+
+sf_mrt_tpe_bl %>%
+  mutate(
+    站號=str_extract(                  #######    取出
+   經過路線,"(?<=(BL))[:digit:]+"   
+    ########  regular experssion ，有出現BL的項目,取出BL後面的數字(非數字不會取出)編到"站號"這個column
+    )
+  )  %>% arrange(站號)  ->sf_mrt_tpe_bl         ############# 站號排序
+
+sf_mrt_tpe_bl
+```
+
+#捷運2
+```{r}
+sf_mrt_tpe_bl %>% 
+  st_coordinates() %>% 
+  st_linestring()  ->sfg_mrt_bl2      # 捷運板南線的simple feature geometry
+
+sfg_mrt_bl2 %>% ggplot+geom_sf()
+
+
+```
+
+
+

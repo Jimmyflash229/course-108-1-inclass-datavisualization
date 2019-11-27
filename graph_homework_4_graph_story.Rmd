@@ -38,7 +38,13 @@ graphData$graphdata %>%  ggplot() +
   ) +geom_point(
      data=dataList$data3,
      aes(x=`年分`,y=`來台旅遊人數占比`),stat="identity"  ,position = "fill"
- )
+ )+
+  scale_y_continuous(
+    expand = expand_scale(add=c(0,0))
+  )+scale_x_discrete(
+    expand = expand_scale(add=c(0,0))
+  )
+  
 
 
 ```
