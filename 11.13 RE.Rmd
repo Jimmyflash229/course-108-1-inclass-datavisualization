@@ -218,6 +218,7 @@ sf_mrt_tpe_bl %>%
   st_coordinates() %>% 
   st_linestring()  ->sfg_mrt_bl2      # 捷運板南線的simple feature geometry
 
+
 sfg_mrt_bl2 %>% ggplot+geom_sf()
 
 ```
@@ -228,25 +229,30 @@ sfg_mrt_bl2 %>% ggplot+geom_sf()
 df_mrt  <- data.frame(
   linename="BL"
 )
+df_mrt
 
  sfg_mrt_bl2 %>% 
    st_sfc() ->sfc_mrt_bl2
-
- 
- df_mrt %>%  
-   st_set_geometry(sfc_mrt_bl2) ->df_mrt
  
  
- 
- 
-
+df_mrt %>%    st_set_geometry(sfc_mrt_bl2) ->df_mrt
 
 st_crs(sf_mrt_tpe_bl)
-
-
 ```
 
 
+
+#  捷運4
+```{r}
+st_mrt_tpe %>% st_crs->mrt_crs
+
+df_mrt %>% st_set_crs(mrt_crs) ->df_mrt
+
+df_mrt
+
+
+
+```
 
 
 

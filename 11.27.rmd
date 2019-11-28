@@ -1,0 +1,89 @@
+---
+title: "每週環境"
+author: "劉信傑"
+date: "9/20/2019"
+output: html_document
+---
+
+##環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext);library(magrittr)
+
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+
+
+```
+
+#osmdata
+```{r}
+download.file("https://www.dropbox.com/s/wisgdb03j01js1r/map.osm?dl=1",
+              destfile = "map.osm")
+st_layers("map.osm")
+
+st_layers("map.osm") ->  layers_map 
+layers_map %>% View
+layers_map
+
+```
+
+
+#
+```{r}
+st_read("map.osm",layer="lines") -> sf_ntpu_lines
+
+sf_ntpu_lines %>%  ggplot+geom_sf()
+
+sf_ntpu_lines %>% filter(
+  !is.na(name)
+) %>% ggplot+geom_sf()
+
+st_read("map.osm",layer="points")->sf_ntpu_points
+
+sf_ntpu_points %>% ggplot+geom_sf()
+
+```
+
+
+# sf_ntpu_polygons
+```{r}
+st_read("map.osm",
+        layer="multipolygons"
+        )  ->sf_ntpu_polygons
+
+sf_ntpu_polygons %>% ggplot()+geom_sf() ->gg_ntpu
+
+########
+gg_ntpu+geom_sf(
+  data=sf_ntpu_lines
+)+
+  geom_sf(
+    data=sf_ntpu_points,
+    aes(color=highway,fill=highway)
+  )+coord_sf(
+    xlim=c(121.357,121.38),
+    ylim=c(24.936,24.949)
+  )
+
+
+```
+
+# save   存檔  可存成jpg,png,svg  等檔     或按圖按右鍵另存
+```{r}
+ gg_ntpu %>% ggsave(filename="gg_ntpu.jpg")
+```
+
+
+
+
+
+
+
+
+
+
