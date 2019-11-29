@@ -78,11 +78,125 @@ gg_ntpu+geom_sf(
  gg_ntpu %>% ggsave(filename="gg_ntpu.jpg")
 ```
 
+#osm bbox
+```{r}
+#Overpass query  :opq
+
+
+```
+
+#Guides
+```{r}
+
+```
+
+# facet
+```{r}
 
 
 
+load(url("https://github.com/tpemartin/course-108-1-inclass-datavisualization/blob/master/%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/homework6/graphData_homework6_021.Rda?raw=true"))
+source("https://www.dropbox.com/s/0ydtqtxu5guy6i1/theme_lin.R?dl=1")
+
+resume_df %>% 
+  mutate(開始 = ymd(開始), 結束 = ymd(結束))  -> resume_df
+
+resume_df %>%
+  ggplot(
+    aes(x = 開始, y = 項目)) +    
+  geom_text(
+    aes(label = 名稱), size = 2.5) + 
+  geom_segment(
+    aes(
+      xend = 結束, yend = 項目, color = 分類, size = 2, alpha = 1
+      )
+    ) +
+  scale_x_date(
+      breaks = seq(as.Date("2015-01-01"), as.Date("2020-01-01"), by="1 year"),
+      labels = scales::date_format("%Y")
+      )+
+  labs(title = "Kuo, Shih-Jung  郭士榮", subtitle = "熱愛挑戰不設限、豐富國際經驗、在學三份實習") + 
+  theme_lin() -> gg_basic
+
+gg_basic
+```
 
 
+# facet_rid
+```{r}
+# facet  ~為簡易寫法
+
+gg_basic +
+  facet_grid(.~分類) -> gg_facet_column
+
+gg_basic +
+  facet_grid(分類~.) -> gg_facet_row
+
+
+gg_facet_column
+gg_facet_row
+
+
+# ~改成正是寫法  row跟col
+gg_basic +
+  facet_grid(
+    rows=vars(分類)
+    ) -> gg_facet
+
+
+gg_basic +
+  facet_grid(
+    cols=vars(分類)
+    ) -> gg_facet2
+
+
+gg_facet
+gg_facet2
+
+```
+
+
+# 讓y軸 變乾淨
+```{r}
+gg_basic +
+  facet_grid(分類~.,  scales = "free_y") -> gg_facet_free
+
+gg_facet_free
+```
+
+
+# free space and free scale
+```{r}
+load(url("https://github.com/tpemartin/course-108-1-inclass-datavisualization/blob/master/%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/homework3/graphData_homework3_002.Rda?raw=true"))
+
+graphData$sub_2015_city%>%
+  arrange(desc(area), avg_nh)%>%
+  mutate(city = forcats::fct_inorder(city)) -> df_eldercare
+
+df_eldercare %>%
+  ggplot(
+    aes(y = avg_nh, x = city, fill = area)
+    )+
+  geom_col(
+    width=0.7
+  )+
+  coord_flip()+
+  labs(x = "長照機構數(每10,000位老人)", y="")+
+  theme_lin() -> gg_original
+
+gg_original
+
+gg_original+
+  facet_grid(
+    rows=vars(area), scales="free_y"
+  )
+
+#多free space
+gg_original+
+  facet_grid(
+    rows=vars(area), scales="free_y", space="free_y"
+  )
+```
 
 
 
