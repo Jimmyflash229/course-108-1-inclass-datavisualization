@@ -1,0 +1,109 @@
+---
+title: "每週環境"
+author: "劉信傑"
+date: "9/20/2019"
+output: html_document
+---
+
+##環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext);library(magrittr);library(colorspace);library(scales);library(magick)
+
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+
+
+```
+```{r}
+library(clipr)
+read_clip() -> name
+
+
+```
+
+
+```{r}
+# save as  svg  圖存成svg，可以從網頁改每個元素
+# (url("https://www.mrplayer.tw/photos/shares/fun_201710032/59d3530ff3288.jpg"))
+# ggsave(,filename = "tree.svg")
+```
+
+
+
+
+```{r}
+source("https://www.dropbox.com/s/wlv1ssxqq6n4p7u/gg_hw5_004.R?dl=1",encoding = "utf-8")
+
+gg_hw5_004 %>%
+  ggplotly() ->
+  pltly_hw5_004
+
+pltly_hw5_004
+
+
+
+api_create(pltly_hw5_004,filename="pltly_hw5_004",fileopt="overwrite") -> Meta_pltly_hw5_004
+
+pltly_hw5_004_v1 <- api_download_plot("1","jimmy85229")
+pltly_hw5_004_v1
+```
+
+
+```{r}
+file.create(".Rprofile")
+file.edit(".Rprofile") 
+```
+
+
+```{r}
+load(url("https://www.dropbox.com/s/r21jg0vxf77geu9/plot_tree.Rda?dl=1"))
+
+plot_tree
+
+ggsave(plot_tree, file="plot_tree.svg")
+
+```
+
+
+
+
+# hover
+```{r}
+library(listviewer)
+
+p <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+   geom_point() + geom_smooth()
+pltly_p0 <- ggplotly(p)
+
+pltly_p0 %>% plotly_json()
+pltly_p0
+
+pltly_p <- 
+  pltly_p0 %>% 
+  style(
+    traces=2:3,
+    hoverinfo = "none" ### 不顯示
+    
+    ) 
+pltly_p0
+pltly_p
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
