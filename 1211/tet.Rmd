@@ -4,33 +4,47 @@ output:
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
+    self_contained: true
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
 ```
 
-Column {data-width=650}
+Column {data-width=600}
 -----------------------------------------------------------------------
 
-### Chart A
+### US
+<div id="usMAP>
 
 ```{r}
-
+load("plot_us.Rda")
+plot_us
 ```
 
-Column {data-width=350}
+</div>
+
+Column {data-width=400}
 -----------------------------------------------------------------------
 
-### Chart B
+### China
 
 ```{r}
-
+load("plot_china.Rda")
+plot_china
 ```
 
-### Chart C
+### Saudi Arabia
 
 ```{r}
+load("plot_saudi.Rda")
+plot_saudi
+```
+
+
+
+```{r}
+
 
 ```
 

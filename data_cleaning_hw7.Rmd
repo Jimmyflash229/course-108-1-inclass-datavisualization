@@ -1,0 +1,73 @@
+---
+title: "123asdf.rmd"
+author: "劉信傑"
+date: "12/5/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+
+nations_1_ <- read_csv("nations (1).csv",locale = locale(encoding = "BIG5"))
+#nations_1_ %>% View()
+
+source("https://www.dropbox.com/s/4tubw8e5h3cem6w/theEconomist.R?dl=1")
+
+"https://www.economist.com/the-world-this-week/2019/11/21/politics-this-week" %>%
+  get_theWorldThisWeek() -> df_politics
+
+"https://www.economist.com/the-world-this-week/2019/11/21/business-this-week" %>%
+  get_theWorldThisWeek() -> df_business
+
+cbind(df_politics$content) 
+
+df_politics %>%  mutate(
+  簡述=c(
+        "斯里蘭卡反恐行動                                                            死傷",          #1
+        "香港法院判定禁口罩令違反基本法                                              國內事件",          #2
+        "美國國會通過香港法案                                                        國際事件",          #3
+        "駐韓美軍費用問題                                                            國際事件",          #4
+        "塔利班以恐怖分子交換人質                                                    軍事衝突",          #5
+        "彈劾川普的調查案進度                                                        國際事件",          #6
+        "俄羅斯干預美國政治                                                          國際事件",          #7
+        "伊朗民眾示威抗議                                                            死傷",          #8
+        "美國承認以色列西岸所有權                                                    國際事件",          #9
+        "以色列攻擊伊朗                                                              軍事衝突",          #10
+        "布基納法索、馬里和尼日爾的軍事衝突影響人民生計                              軍事衝突",          #11
+        "亞馬遜的森林遭濫砍程度日益增加                                              國際事件",          #12
+        "智利政府公投是否該制定新憲法                                                國內事件",          #13
+        "玻利維亞鎮壓示威者                                                          死傷",          #14
+        "英國選舉辯論發生衝突                                                        國內事件",          #15
+        "澳大利亞記者在倫敦被拘留 檢察官考慮將他引渡到美國                           國際事件",          #16
+        "白俄羅斯反對派在議會無席次                                                  國內事件"          #17
+        ),
+  標籤=c(
+    "死傷",
+    "國內事件",
+    "國際事件",
+    "國際事件",
+    "軍事衝突",
+    "國際事件",
+    "國際事件",
+    "死傷",
+    "國際事件",
+    "軍事衝突",
+    "軍事衝突",
+    "國際事件",
+    "國內事件",
+    "死傷",
+    "國內事件",
+    "國際事件",
+    "國內事件"
+  )
+)->df_politics
+
+df_politics$標籤 %>% View()
+```
+

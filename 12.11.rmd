@@ -20,12 +20,36 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
 
 ```
 ```{r}
-library(clipr)
-read_clip() -> name
+# library(clipr)
+# read_clip() 
+```
 
+
+
+# creates a website project
+```{r}
+source("https://www.dropbox.com/s/mdx4777ugnluspz/webApplications.R?dl=1")
+project_html_create(
+  main_file="index.html",
+  type="plain", # or bs : bootstrap
+  dirlib="webProject0",
+  structure=c(
+    "js",
+    "css",
+    "assets")
+)
 
 ```
 
+
+########
+
+```{r}
+file.edit("my.css")
+
+
+```
+file.edit("my.css")
 
 
 
