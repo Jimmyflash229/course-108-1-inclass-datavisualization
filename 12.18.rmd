@@ -1,0 +1,84 @@
+---
+title: "每週環境"
+author: "劉信傑"
+date: "9/20/2019"
+output: html_document
+---
+
+##環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext);library(magrittr);library(tmcn);library(gridSVG)
+
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+
+
+source("https://www.dropbox.com/s/mdx4777ugnluspz/webApplications.R?dl=1")
+
+var listenArea=document.getElementById('usMap')
+var actionArea=document.getElementById('usNews')
+
+function giveNews(){
+    actionArea.innerHTML="China’s successful repression in Tibet provides a model for Xinjiang"
+}
+
+listenArea.addEventListener("mouseover",giveNews)
+
+
+```
+
+
+# creat a NEW Project
+```{r}
+webapp_project_creat(
+  dirlib="./1211/webapp",
+  overwrite=
+)
+```
+
+
+
+
+```{r}
+dir.create(
+  "./1211"
+)
+download.file("https://raw.githubusercontent.com/tim8537099/course-108-1-inclass-datavisualization/master/example/tet.Rmd",
+              destfile="1211/tet.Rmd"
+)
+download.file("https://github.com/tim8537099/course-108-1-inclass-datavisualization/blob/master/example/plot_us.Rda?raw=true",
+              destfile="1211/plot_us.Rda"
+)
+
+
+
+
+file.edit("1211/tet.Rmd")
+
+
+plot_us
+
+gridSVG::grid.export("plot1.svg",addClasses=TRUE)
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
