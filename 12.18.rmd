@@ -17,8 +17,11 @@ showtext_auto(enable=TRUE) #啟用字體
 theme_set(theme_classic())
 knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
 
+servr::httd(dir="./1211")
+servr::httd(dir="./1211/webapp")
 
-source("https://www.dropbox.com/s/mdx4777ugnluspz/webApplications.R?dl=1")
+
+source("https://www.dropbox.com/s/mdx4777ugnluspz/webApplications.R?dl=1",encoding = "utf-8")
 
 var listenArea=document.getElementById('usMap')
 var actionArea=document.getElementById('usNews')
@@ -35,10 +38,17 @@ listenArea.addEventListener("mouseover",giveNews)
 
 # creat a NEW Project
 ```{r}
-webapp_project_creat(
+source("https://www.dropbox.com/s/mdx4777ugnluspz/webApplications.R?dl=1")
+
+
+webapp_project_create(
   dirlib="./1211/webapp",
-  overwrite=
+  overwrite=T
 )
+
+
+webapp_project_create() %>% View()
+
 ```
 
 
@@ -65,6 +75,17 @@ plot_us
 
 gridSVG::grid.export("plot1.svg",addClasses=TRUE)
 
+
+servr::httd(dir="./1211/webapp")
+
+
+```
+
+
+```{r}
+download.file("https://www.dropbox.com/s/99tfecfkblpsij8/getSVGelement.zip?dl=1",
+              destfile = "getSVGelement.zip")
+unzip("getSVGelement.zip")
 
 
 ```
