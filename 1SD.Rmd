@@ -1,0 +1,51 @@
+---
+title: "Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+   orientation: rows
+
+---
+
+```{r global, include=FALSE}
+ 
+Name=c('Test1', 'Test1', 'Test2')
+Number = c(8, 9, 7)
+zt <- data.frame(Name, Number)
+PersonList <- sort(unique(zt$Name))
+```
+
+Selections {.sidebar}
+===============================
+```{r}
+#selectInput("PersonSel", "Person: ", PersonList, selected = 'Test1')
+```
+
+Tab 1
+======================================================================
+
+Row 
+-----------------------------------------------------------------------
+
+### Mean
+
+```{r}
+renderValueBox({
+  cqi <- zt %>%
+  na.omit() %>%
+  filter(Name %in% input$PersonSel) %>%
+  summarize(avg_Number = round(mean(Number)))
+  valueBox(cqi, icon = "fa-users")
+})
+```
+
+### Median
+
+```{r}
+renderValueBox({
+  cqi <- zt %>%
+  na.omit() %>%
+  filter(Name %in% input$PersonSel) %>%
+  summarize(avg_Number = round(median(Number)))
+  valueBox(cqi, icon = "fa-comments")
+})
+```
