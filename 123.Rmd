@@ -20,12 +20,3 @@ knitr::include_graphics(path = "https://i.imgur.com/a2cAR5X.jpg")
 ggplot(mtcars,aes(x=mpg)) + geom_histogram(binwidth=5)
 ```  
 
-
-
-```{r conditional_block, echo=FALSE, results='asis', eval=show_text}
-#cat("## Hey look, a heading!
-123
-#lorem ipsum dolor emet...")
-```
- 
- 
