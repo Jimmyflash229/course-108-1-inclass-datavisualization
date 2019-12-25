@@ -1,0 +1,110 @@
+---
+title: "Untitled"
+author: "劉信傑"
+date: "12/25/2019"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=F)
+```
+
+```{r}
+
+#下載並壓縮   https://www.dropbox.com/s/vk5gsth0awit219/webProjectTemplate.zip?dl=1
+
+
+webapp_project_create(dirlib="./ch7_final/", overwrite = T)
+
+```
+######
+
+
+
+```{js}
+
+<script id='json1' type="application/json">
+{
+"name": "John",
+"age": 30,
+"cars": [ "Ford", "BMW", "Fiat" ]
+}  
+</script>
+
+
+servr::httd(dir="/.ch7_final/webProject",port="7777")
+
+
+webApplications (3).R
+
+```
+
+
+#js   HTML 
+
+```{r}
+var jd=document.getElementById(`jason1`).innerHTML                #json data
+var jsd=JSON.parse(jd)              #javascript data
+
+```
+
+
+
+
+#HTML
+
+```{r eval=T echo=F}
+library(jsonlite)
+library(htmltools)
+
+# ggplot2裡的mtcars dataframe
+mtcars %>%
+  jsonlite::toJSON() %>%  ## (1)
+  writeLines("mtcars.json") ## (2)
+
+htmltools::includeScript(
+  "mtcars.json",
+  type="application/json",
+  id="myJson"
+)
+
+```
+
+
+
+```{r}
+source("https://www.dropbox.com/s/mdx4777ugnluspz/webApplications.R?dl=1")
+browseURL("http://localhost:8888/flxdashboard_control.html")
+
+html_create_bootstrap("myControl.html",dir="./ch7_final/webProjectTemplate")
+
+to_frameableHTML("./ch7_final/webProjectTemplate/myControl.html")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
