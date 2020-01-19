@@ -1,0 +1,188 @@
+---
+title: "partial final project"
+author: "Y.T Lin"
+date: "2020/1/19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext); library(sf); library(osmdata); library(rmapshaper); library(htmlwidgets); library(widgetframe); library(htmltools)
+library(spData); library(colorspace)
+
+library(kableExtra)
+
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+#theme_set(theme_classic())
+knitr::opts_chunk$set(fig.align='center', fig.showtext=T, echo = F)
+```
+
+```{r the not included tidying, echo=FALSE}
+load(file = "finalProject.Rda")
+
+# Split out the three different individuals
+stat <- gradeData %>% dplyr::filter(grepl(pattern = "統計學系", `系級`))
+  # stat %>% View
+
+econ <- gradeData %>% dplyr::filter(grepl(pattern = "經濟學系", `系級`))
+
+accnt <- gradeData %>% dplyr::filter(grepl(pattern = "會計學系", `系級`))
+
+# split the individual's score (based on the semesters)
+splitSplit <- function(df){
+  dfn <- df %>% dplyr::mutate(`年級` = case_when(grepl(pattern = "1", `系級`) ~ "1",
+                                               grepl(pattern = "2", `系級`) ~ "2",
+                                               grepl(pattern = "3", `系級`) ~ "3",
+                                               grepl(pattern = "4", `系級`) ~ "4"))
+  colnames(dfn)[12] <- "必選修類別"
+  
+  delete <- c("系級", "科目代碼", "班別", "學年", "學期", 
+              "授課語言", "上課時間及教室", "年級")
+  
+  y11 <- dfn %>% dplyr::filter(`年級` == 1 & `學期` == 1) %>%
+    dplyr::select(-one_of(delete))
+  y12 <- dfn %>% dplyr::filter(`年級` == 1 & `學期` == 2)%>%
+    dplyr::select(-one_of(delete))
+  y21 <- dfn %>% dplyr::filter(`年級` == 2 & `學期` == 1)%>%
+    dplyr::select(-one_of(delete))
+  y22 <- dfn %>% dplyr::filter(`年級` == 2 & `學期` == 2)%>%
+    dplyr::select(-one_of(delete))
+  y31 <- dfn %>% dplyr::filter(`年級` == 3 & `學期` == 1)%>%
+    dplyr::select(-one_of(delete))
+  y32 <- dfn %>% dplyr::filter(`年級` == 3 & `學期` == 2)%>%
+    dplyr::select(-one_of(delete))
+  y41 <- dfn %>% dplyr::filter(`年級` == 4 & `學期` == 1)%>%
+    dplyr::select(-one_of(delete))
+  y42 <- dfn %>% dplyr::filter(`年級` == 4 & `學期` == 2)%>%
+    dplyr::select(-one_of(delete))
+  
+  dflist <- list(一年級上 = y11, 一年級下 = y12,
+                 二年級上 = y21, 二年級下 = y22,
+                 三年級上 = y31, 三年級下 = y32,
+                 四年級上 = y41, 四年級下 = y42)
+ 
+  return(dflist) 
+}
+
+stat <- splitSplit(df = stat)
+ # stat %>% View
+
+econ <- splitSplit(econ)                       
+accnt <- splitSplit(accnt)
+
+ # econ$二年級上
+```
+
+
+```{r function for kable, include = F}
+kbing <- function(df){
+  kable(df, align = "c") %>%
+    kable_styling(bootstrap_options = c("hover", "striped"),
+                  full_width = F, fixed_thead = T) %>%
+    row_spec(row = which(df[1] < 60), bold = T, color = "red") %>%
+    footnote(general = "60分以下為不及格，以紅色粗體字標示")
+}
+```
+
+#### STAT
+
+```{r stat 一年級上}
+kbing(stat$一年級上)
+```
+
+```{r stat 一年級下}
+kbing(stat$一年級下)
+```
+
+```{r stat 二年級上}
+kbing(stat$二年級上)
+```
+
+```{r stat 二年級下}
+kbing(stat$二年級下)
+```
+
+```{r stat 三年級上}
+kbing(stat$三年級上)
+```
+
+```{r stat 三年級下}
+kbing(stat$三年級下)
+```
+
+```{r stat 四年級上}
+kbing(stat$四年級上)
+```
+
+```{r stat 四年級下}
+kbing(stat$四年級下)
+```
+
+#### ECON
+
+```{r econ 一年級上}
+kbing(econ$一年級上)
+```
+
+```{r econ 一年級下}
+kbing(econ$一年級下)
+```
+
+```{r econ 二年級上}
+kbing(econ$二年級上)
+```
+
+```{r econ 二年級下}
+kbing(econ$二年級下)
+```
+
+```{r econ 三年級上}
+kbing(econ$三年級上)
+```
+
+```{r econ 三年級下}
+kbing(econ$三年級下)
+```
+
+```{r econ 四年級上}
+kbing(econ$四年級上)
+```
+
+```{r econ 四年級下}
+kbing(econ$四年級下)
+```
+
+#### ACCNT
+
+```{r accnt 一年級上}
+kbing(accnt$一年級上)
+```
+
+```{r accnt 一年級下}
+kbing(accnt$一年級下)
+```
+
+```{r accnt 二年級上}
+kbing(accnt$二年級上)
+```
+
+```{r accnt 二年級下}
+kbing(accnt$二年級下)
+```
+
+```{r accnt 三年級上}
+kbing(accnt$三年級上)
+```
+
+```{r accnt 三年級下}
+kbing(accnt$三年級下)
+```
+
+```{r accnt 四年級上}
+kbing(accnt$四年級上)
+```
+
+```{r accnt 四年級下}
+kbing(accnt$四年級下)
+```
