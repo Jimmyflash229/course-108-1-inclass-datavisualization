@@ -1,0 +1,113 @@
+---
+title: "3avg_grade"
+author: "劉信傑"
+date: "1/19/2020"
+output: html_document
+---
+
+
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+Sys.setlocale("LC_ALL","Chinese")  #解決中文亂碼問題
+
+
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext);library(ggthemes);
+library(grDevices) # 不同顏色模型代碼的呈現及轉換
+library(scales) # show_col()螢幕立即顯示顏色
+library(colorspace) # 調色盤選擇及ggplot應用工具
+library(shinyjs) # 支援套件
+
+
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+```
+
+
+```{r} 
+
+##########  clean
+dataList <- list()
+gradeData%>% filter(系級=="會計學系1")
+
+gradeData %>% mutate(
+ 系別=factor(case_when(
+    grepl("會計", 系級) ~"會計",
+    grepl("經濟", 系級) ~"經濟",
+    grepl("統計", 系級) ~"統計",
+    TRUE ~ as.character(系級)
+  ),levels=c("會計","經濟","統計"))   ,
+
+ 年級別 =factor(case_when(
+    grepl("1", 系級) ~"大一",
+    grepl("2", 系級) ~"大二",
+    grepl("3", 系級) ~"大三",
+    grepl("4", 系級) ~"大四",
+    TRUE ~ as.character(系級)
+  ),levels=c("大一","大二","大三","大四"))
+) ->dataList$dataGrade
+
+dataList$dataGrade %>% group_by(
+  系級
+) %>% mutate(
+  學年平均成績=as.double(sum(學期成績*學分數)/sum(學分數))
+) %>%ungroup() ->dataList$dataGrade
+
+
+dataList$dataGrade %>% View()
+
+######  1~4
+
+dataList$dataGrade %>% filter(系級=="會計學系1")  ->dataList$acc1
+dataList$dataGrade %>% filter(系級=="會計學系2")  ->dataList$acc2
+dataList$dataGrade %>% filter(系級=="會計學系3")  ->dataList$acc3
+dataList$dataGrade %>% filter(系級=="會計學系4")  ->dataList$acc4
+
+
+dataList$dataGrade %>% filter(系級=="經濟學系1")  ->dataList$eco1
+dataList$dataGrade %>% filter(系級=="經濟學系2")  ->dataList$eco2
+dataList$dataGrade %>% filter(系級=="經濟學系3")  ->dataList$eco3
+dataList$dataGrade %>% filter(系級=="經濟學系4")  ->dataList$eco4
+
+
+dataList$dataGrade %>% filter(系級=="統計學系1")  ->dataList$sta1
+dataList$dataGrade %>% filter(系級=="統計學系2")  ->dataList$sta2
+dataList$dataGrade %>% filter(系級=="統計學系3")  ->dataList$sta3
+dataList$dataGrade %>% filter(系級=="統計學系4")  ->dataList$sta4
+
+
+rbind(dataList$acc1,dataList$eco1,dataList$sta1) ->dataList$class1
+rbind(dataList$acc2,dataList$eco2,dataList$sta2) ->dataList$class2
+rbind(dataList$acc3,dataList$eco3,dataList$sta3) ->dataList$class3
+rbind(dataList$acc4,dataList$eco4,dataList$sta4) ->dataList$class4
+
+
+rbind(dataList$acc1,dataList$acc2,dataList$acc3,dataList$acc4) ->dataList$acc
+rbind(dataList$eco1,dataList$eco2,dataList$eco3,dataList$acc4) ->dataList$eco
+rbind(dataList$sta1,dataList$sta2,dataList$sta3,dataList$sta4) ->dataList$sta
+
+
+##########   plot
+
+ ggplot(data=dataList$dataGrade,aes(x=年級別,y=學年平均成績,group=1,color=系別))+          #acc
+  geom_point(data=dataList$acc,aes(x=年級別,y=學年平均成績))+
+  geom_line(data=dataList$acc,aes(x=年級別,y=學年平均成績))+
+   
+  geom_point(data=dataList$eco,aes(x=年級別,y=學年平均成績))+                              #eco
+  geom_line(data=dataList$eco,aes(x=年級別,y=學年平均成績))+
+   
+  geom_point(data=dataList$sta,aes(x=年級別,y=學年平均成績))+                              #sta
+  geom_line(data=dataList$sta,aes(x=年級別,y=學年平均成績))      +
+   
+  ylim(60,100)
+ 
+
+
+```
+
+
+
+
+
+
+
